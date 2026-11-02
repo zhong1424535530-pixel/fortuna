@@ -1,0 +1,32 @@
+.profile-menu { position: relative; }
+.profile-trigger { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; position: relative; }
+.profile-trigger .personal-avatar { width: 44px; height: 44px; box-shadow: none; transition: border-color .15s; }
+.profile-trigger .personal-avatar > .asset-avatar { width: 100% !important; height: 100% !important; } /* 头像随外框缩放（内联尺寸需覆盖） */
+.profile-trigger:hover .personal-avatar, .profile-trigger[aria-expanded="true"] .personal-avatar { border-color: var(--mint-a5); }
+.profile-name { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 500; line-height: 1.2; color: var(--text-2); }
+.profile-caret { position: absolute; right: -2px; top: 32px; padding: 1px; border-radius: 50%; color: var(--text-3); background: var(--surface-2); border: 1px solid var(--line-solid); }
+.profile-popover { position: absolute; top: calc(100% + 8px); right: 0; z-index: 30; width: 232px; padding: 6px; display: grid; gap: 2px; border: 1px solid var(--line-solid); border-radius: var(--radius-lg); background: var(--surface-2); box-shadow: 0 18px 40px #000a; }
+.profile-head { display: flex; align-items: center; gap: 10px; padding: 8px 8px 10px; margin-bottom: 4px; border-bottom: 1px solid var(--line); min-width: 0; }
+.profile-head .personal-avatar { width: 40px; height: 40px; flex-shrink: 0; box-shadow: none; }
+.profile-head .personal-avatar > .asset-avatar { width: 100% !important; height: 100% !important; }
+.profile-head strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-md); font-weight: 500; color: var(--text-1); }
+.profile-row, .profile-item { display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: var(--radius-md); font-size: var(--fs-sm); color: var(--text-2); }
+.profile-row > span { margin-right: auto; }
+.profile-item { width: 100%; border: 0; background: none; text-align: left; cursor: pointer; }
+.profile-item:hover:not(:disabled), .profile-item:focus-visible { background: var(--fill-2); color: var(--text-1); }
+.profile-item svg { color: var(--text-4); flex-shrink: 0; }
+.profile-item span:not(.profile-switch) { margin-right: auto; }
+.profile-item.danger { color: var(--down); }
+.profile-item.danger svg { color: var(--down); }
+.profile-item:disabled { opacity: .5; cursor: default; }
+.profile-lang { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--fill-2); border-radius: var(--radius-sm); background: #02050440; }
+.profile-lang button { border: 0; padding: 5px 9px; border-radius: var(--radius-sm); background: transparent; color: var(--text-4); font-size: var(--fs-xs); line-height: 1; cursor: pointer; }
+.profile-lang button.active { background: var(--fill-3); color: var(--text-1); }
+.profile-switch { position: relative; width: 30px; height: 18px; flex-shrink: 0; border-radius: 9px; background: var(--fill-4); transition: background .15s; }
+.profile-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--text-2); transition: transform .15s; }
+.profile-switch.on { background: var(--mint-a5); }
+.profile-switch.on::after { transform: translateX(12px); background: var(--on-mint); }
+@media (max-width: 767px) {
+  .profile-trigger .personal-avatar { width: 38px; height: 38px; }
+  .profile-caret { top: 26px; }
+}

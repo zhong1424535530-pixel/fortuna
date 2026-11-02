@@ -1,0 +1,27 @@
+.settings-page { display: grid; gap: 20px; padding-bottom: 24px; }
+.settings-panel-body { padding: 0 22px 22px; min-width: 0; }
+.settings-avatar-row, .settings-avatar-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.settings-avatar-row { gap: 24px; padding-top: 4px; }
+.personal-avatar.settings-avatar-preview { width: 64px; height: 64px; flex-shrink: 0; }
+.settings-avatar-row + .settings-error { margin-top: 16px; }
+.settings-account { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.settings-account label { display: grid; gap: 8px; flex: 1; min-width: 200px; max-width: 320px; }
+.settings-account label span { font-size: var(--fs-xs); color: var(--text-3); }
+.settings-account input { min-width: 0; width: 100%; height: var(--control-h); padding: 0 12px; color: var(--text-2); background: var(--bg-deep); border: 1px solid var(--line-solid); border-radius: var(--radius-md); }
+.settings-account input:disabled { opacity: .5; }
+.settings-account .button { font-size: var(--fs-xs); }
+.settings-description code { color: var(--text-2); }
+.settings-description { color: var(--text-4); font-size: var(--fs-xs); line-height: 1.9; margin: 10px 0; }
+.settings-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 17px; }
+.settings-actions .button { font-size: var(--fs-xs); }
+.settings-import { position: relative; display: inline-flex; align-items: center; gap: 7px; color: var(--text-2); border: 1px solid var(--fill-4); border-radius: var(--radius-md); height: var(--control-h); padding: 0 13px; font-size: var(--fs-xs); overflow: hidden; }
+.settings-import input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.settings-import.disabled { opacity: .5; }
+.settings-import:focus-within { outline: 2px solid var(--mint); outline-offset: 3px; }
+.settings-error, .settings-success { font-size: var(--fs-xs); line-height: 1.9; color: var(--down); border: 1px solid var(--down-a2); border-radius: var(--radius-sm); padding: 11px 14px; margin: 0; overflow-wrap: anywhere; }
+.settings-success { color: var(--text-2); border-color: var(--mint-a3); }
+.settings-file-label { font-size: var(--fs-xs); color: var(--text-2); overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .settings-panel-body { padding: 0 17px 18px; }
+  .settings-page { gap: 16px; }
+}

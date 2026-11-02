@@ -1,0 +1,18 @@
+# 没有域名时：把下面的 服务器IP 换成公网 IP，用 https://服务器IP:8443 访问。
+# 证书由 Caddy 自带的本地证书机构签发，浏览器第一次会提示“不安全”：电脑上手动信任一次；
+# 手机上要么安装并信任 Caddy 根证书（/var/lib/caddy/.local/share/caddy/pki/authorities/local/root.crt），要么每次点“继续访问”。
+https://服务器IP:8443 {
+	tls internal
+	encode zstd gzip
+	@hashed path /assets/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+	reverse_proxy 127.0.0.1:4173
+}
+
+# 有了域名之后：删掉上面的块，改用下面这段（域名解析到服务器，放行 80 和 443 端口，Caddy 会自动申请并续期正式证书）：
+# asset.你的域名.com {
+# 	encode zstd gzip
+# 	@hashed path /assets/*
+# 	header @hashed Cache-Control "public, max-age=31536000, immutable"
+# 	reverse_proxy 127.0.0.1:4173
+# }

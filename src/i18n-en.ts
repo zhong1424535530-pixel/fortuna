@@ -1,0 +1,45 @@
+// 英文对照表：键是页面里的中文原文，值是英文。没有的键在英文模式下仍显示中文。
+export const en: Record<string, string> = {
+  // 导航和页面名
+  '资产总览': 'Overview', '全部持仓': 'All holdings', '加密资产': 'Crypto', 'A股': 'China A-shares', '美股': 'US stocks', '合约持仓': 'Futures positions',
+  '其他资产': 'Other assets', '账户与钱包': 'Accounts & wallets', '交易记录': 'Transactions', '收益分析': 'Returns', '资产与价格': 'Assets & prices', '设置': 'Settings',
+  '资产': 'Assets', '个人空间': 'Personal space', '跳到主要内容': 'Skip to main content',
+  // 头像菜单
+  '账户菜单': 'Account menu', '我的账户': 'My account', '语言': 'Language', '隐藏金额': 'Hide amounts', '退出登录': 'Sign out', '个人头像': 'Profile picture',
+  // 登录页
+  '资管宝': 'Personal Asset Manager', '重试': 'Retry', '用户名': 'Username', '动态验证码': 'Authenticator code', '打开谷歌验证器，输入当前显示的 6 位数字。': 'Open Google Authenticator and enter the 6-digit code shown.',
+  '验证中': 'Verifying', '进入': 'Sign in', '登录未完成，请稍后重试。': 'Sign-in did not complete. Please try again later.',
+  '无法连接服务。': 'Cannot reach the service.', '正在读取资料…': 'Loading your data…', '正在连接…': 'Connecting…',
+  '无法连接服务，请检查网络后重试。': 'Cannot reach the service. Check your network and try again.', '请求未完成，请稍后重试。': 'The request did not complete. Please try again later.',
+  '用户名或动态码不正确。': 'Incorrect username or code.', '请先登录。': 'Please sign in first.',
+  // 设置页
+  '登录与安全': 'Sign-in & security', '头像预览': 'Profile picture preview', '选择图片': 'Choose image', '选择头像，支持PNG、JPEG、WEBP，最大1 MB': 'Choose a profile picture (PNG, JPEG or WEBP, up to 1 MB)',
+  '保存头像': 'Save picture', '恢复默认': 'Reset to default', '登录用户名': 'Sign-in username', '保存用户名': 'Save username',
+  '图片读取失败。': 'Could not read the image.', '头像保存失败，请重试。': 'Could not save the picture. Please try again.',
+  '登录信息读取失败，请刷新后再试。': 'Could not load sign-in details. Refresh and try again.', '用户名已保存。': 'Username saved.',
+  '用户名已更新，下次登录请使用新用户名。': 'Username updated. Use the new username next time you sign in.', '用户名保存失败，请重试。': 'Could not save the username. Please try again.',
+  '退出失败，请重试。': 'Could not sign out. Please try again.',
+  '用户名显示在右上角头像菜单里，2–32 位，可用中文、字母、数字、下划线、点、短横线。': 'The username appears in the profile menu at the top right. 2–32 characters: letters (including Chinese), digits, underscores, dots and hyphens.',
+  '换手机或重新绑定动态码：在服务器上运行': 'To switch phones or re-bind the authenticator, run this on the server:',
+  '，扫码绑定后所有已登录设备会退出登录。': ', then scan the QR code. All signed-in devices will be signed out.',
+  // 资料与备份
+  '资料与备份': 'Data & backup', '本机资料库已启用': 'Local database is active', '本机保存暂不可用': 'Local saving is unavailable', '尚未迁移，继续使用原文件': 'Not migrated yet; still using the original files',
+  '正在读取资料库状态': 'Reading database status', '最近保存：': 'Last saved: ', '尚无保存记录': 'No save yet', '维护中': 'Under maintenance',
+  '导出备份': 'Export backup', '导入备份': 'Import backup', '选择备份文件': 'Choose a backup file', '重新载入恢复后的资料': 'Reload restored data',
+  '数据条数与保存位置': 'Record counts and storage location', '资料库': 'Database', '导入前的保护备份': 'Protection copy made before import',
+  '本机文件保存已连接': 'Local file saving is connected', '预览旧浏览器资料': 'Preview old browser data', '旧浏览器资料': 'Old browser data', '保存位置': 'Storage location', '资料文件': 'Data file',
+  '连接后显示': 'Shown once connected', '导入前的资料（每次导入会留一份）': 'Data before import (one copy kept per import)',
+  '当前业务资料': 'Current business data', '交易与收支': 'Transactions and cash flows', '查询进度': 'Sync progress', '资产曲线采样': 'Equity curve samples', '持仓与人工历史': 'Holdings and manual history',
+  '价格依据': 'Price observations', '原有人工备份': 'Earlier manual backups', '{n} 条': '{n} records', '{n} 个': '{n}', '{n} 项': '{n}',
+  '恢复完整业务资料前确认': 'Confirm before restoring all data', '将替换全部业务资料，导入前的当前资料会留一份。备份不含密钥。': 'This replaces all business data. A copy of the current data is kept before import. Backups do not include keys.',
+  '备份时间：': 'Backup time: ', '业务记录时间：': 'Records span: ', '至': 'to', '自定义图标': 'Custom icons', '我确认用这份备份替换全部业务资料': 'I confirm replacing all business data with this backup',
+  '取消': 'Cancel', '正在处理，请稍候': 'Working, please wait', '确认恢复全部业务资料': 'Restore all business data', '暂无记录': 'No record', '完整业务备份': 'full-backup',
+  '本机服务未连接或操作结果尚未确认。请保留备份文件，刷新查看最新状态后再操作。': 'The service is unreachable or the result is unconfirmed. Keep the backup file, refresh to see the latest state, then try again.',
+  '本机服务未返回有效资料，请刷新核对操作结果。': 'The service returned no valid data. Refresh to verify the result.', '完整备份操作未完成，请保留原资料。': 'The backup operation did not finish. Your original data is kept.',
+  '资料库状态读取失败。': 'Could not read the database status.', '完整备份操作失败，请保留原资料。': 'The backup operation failed. Your original data is kept.',
+  '备份超过256 MB，本次未导入；原资料保留。': 'The backup is over 256 MB and was not imported. Your data is unchanged.', '备份文件无法读取，请选择本项目导出的备份文件。': 'Cannot read the file. Choose a backup exported from this app.',
+  '恢复结果尚未确认，请刷新核对。': 'The restore result is unconfirmed. Refresh to verify.', '备份文件无法读取。': 'Cannot read the backup file.', '恢复未完成，原资料仍保留。': 'Restore did not finish. Your data is unchanged.',
+  '导出失败，请稍后再试。': 'Export failed. Please try again later.', '旧资料无法读取。': 'Cannot read the old data.', '已设置': 'Set', '默认': 'Default',
+  '手动资产': 'Manual assets', '负债记录': 'Liabilities', '价格或图标设置': 'Price or icon settings', '账户成本': 'Account cost basis', '条': 'records', '正在恢复': 'Restoring', '确认恢复': 'Confirm restore',
+  '恢复备份前确认': 'Confirm before restoring', '将替换头像、手动资产、负债、价格、成本和图标。导入前的当前资料会留一份。': 'This replaces the profile picture, manual assets, liabilities, prices, cost basis and icons. A copy of the current data is kept before import.',
+}

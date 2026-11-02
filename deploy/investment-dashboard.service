@@ -1,0 +1,26 @@
+# 安装：sudo cp deploy/investment-dashboard.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable --now investment-dashboard
+# 路径、用户按实际情况改。服务只监听 127.0.0.1，对外由 Caddy 提供 HTTPS。
+[Unit]
+Description=Personal Investment Dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=investment
+WorkingDirectory=/opt/investment-dashboard
+EnvironmentFile=/etc/investment-dashboard.env
+# 直接用 node 启动，systemctl stop/restart 发出的 SIGTERM 才能到达程序本身（经过 npm 转发可能丢失）。
+ExecStart=/usr/bin/node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 4173 --strictPort
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+# 进程异常占用过多内存时由 systemd 重启，而不是拖垮整台服务器。
+MemoryMax=1200M
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

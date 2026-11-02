@@ -1,0 +1,40 @@
+.asset-costs { min-width: 0; }
+.cost-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.cost-section-heading h3 { margin: 0; font-size: var(--fs-md); font-weight: 500; color: var(--text-2); }
+.cost-section-heading > span { color: var(--text-4); font-size: var(--fs-xs); }
+.cost-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 17px 0; border-block: 1px solid var(--fill-2); }
+.cost-summary > div { display: grid; gap: 9px; min-width: 0; }
+.cost-summary > div > span { color: var(--text-4); font-size: var(--fs-xs); }
+.cost-summary strong { color: var(--text-2); font-size: var(--fs-lg); font-weight: 400; overflow-wrap: anywhere; }
+.cost-summary .cost-unavailable { color: var(--text-4); font-size: var(--fs-sm); }
+.cost-account-row { display: flex; align-items: center; gap: 11px; padding: 16px 0; border-bottom: 1px solid var(--fill-2); }
+.cost-account-name { flex: 1; display: grid; gap: 6px; min-width: 0; }
+.cost-account-name strong { font-size: var(--fs-xs); font-weight: 400; color: var(--text-2); overflow-wrap: anywhere; }
+.cost-account-name span { color: var(--text-4); font-size: var(--fs-xs); overflow-wrap: anywhere; }
+.cost-account-price { display: grid; gap: 6px; text-align: right; min-width: 0; max-width: 40%; }
+.cost-account-price strong { color: var(--text-2); font-size: var(--fs-sm); font-weight: 400; overflow-wrap: anywhere; }
+.cost-account-price small, .cost-account-price time { color: var(--text-4); font-size: var(--fs-xs); line-height: 1.6; }
+.cost-account-row > .button { flex-shrink: 0; font-size: var(--fs-xs); }
+.cost-entry-form { margin-top: 18px; border: 1px solid var(--mint-a3); background: var(--mint-a1); border-radius: var(--radius-md); padding: 17px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 17px; }
+.cost-entry-heading { grid-column: 1 / -1; }
+.cost-entry-heading h4 { margin: 0 0 8px; color: var(--text-2); font-size: var(--fs-xs); font-weight: 500; }
+.cost-entry-form label { display: flex; flex-direction: column; gap: 9px; font-size: var(--fs-xs); color: var(--text-2); min-width: 0; }
+.cost-entry-form input:not([type=checkbox]) { min-width: 0; width: 100%; height: var(--control-h); padding: 0 11px; background: var(--bg-deep); border: 1px solid var(--line-solid); color: var(--text-2); border-radius: var(--radius-md); }
+.cost-entry-form input::placeholder { color: var(--text-4); }
+.cost-entry-form .cost-fee-option { flex-direction: row; align-items: flex-start; grid-column: 1 / -1; line-height: 1.8; font-size: var(--fs-xs); }
+.cost-fee-option input { margin: 3px 0 0; flex-shrink: 0; accent-color: var(--mint); }
+.cost-entry-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.cost-entry-actions .button { font-size: var(--fs-xs); }
+.cost-error, .holding-dialog .asset-costs { padding: 22px 24px; border-top: 1px solid var(--fill-2); }
+.cost-dialog-content { padding: 22px 24px; }
+@media (max-width: 639px) {
+  .cost-summary { gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cost-summary > div:last-child { grid-column: 1 / -1; }
+  .cost-account-row { flex-wrap: wrap; gap: 10px; }
+  .cost-account-price { max-width: 47%; }
+  .cost-account-row > .button { margin-left: 37px; }
+  .cost-entry-form { grid-template-columns: minmax(0, 1fr); padding: 14px; }
+  .cost-entry-form input:not([type=checkbox]) { font-size: var(--fs-lg); }
+  .cost-entry-actions { justify-content: flex-start; }
+  .holding-dialog .asset-costs, .cost-dialog-content { padding: 19px 18px; }
+}

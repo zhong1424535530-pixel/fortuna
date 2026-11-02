@@ -1,0 +1,44 @@
+.personal-balance { margin: 16px 0 20px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--fill-1); }
+.personal-balance-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 22px 24px; gap: 24px; }
+.personal-balance-grid > div { display: grid; gap: 12px; min-width: 0; }
+.personal-balance-grid > div + div { border-left: 1px solid var(--fill-2); padding-left: 24px; }
+.personal-balance-grid span, .personal-balance-grid button { color: var(--text-3); font-size: var(--fs-xs); }
+.personal-balance-grid small { color: var(--text-4); font-size: var(--fs-xs); margin-left: 8px; }
+.personal-balance-grid button { background: none; border: 0; padding: 0; display: flex; align-items: center; gap: 8px; justify-self: start; }
+.personal-balance-grid strong { font-size: clamp(16px, 1.8vw, 24px); font-weight: 500; overflow-wrap: anywhere; }
+.personal-balance-grid .debt-value { color: var(--debt); }
+.personal-balance > p { margin: 0; padding: 13px 24px; border-top: 1px solid var(--fill-2); color: var(--text-4); font-size: var(--fs-xs); line-height: 1.9; }
+.liability-distribution { margin-bottom: 20px; }
+.liability-bars { display: grid; gap: 22px; padding: 0 24px 24px; }
+.liability-bar-row > div:first-child { display: flex; justify-content: space-between; gap: 16px; font-size: var(--fs-xs); color: var(--text-3); }
+.liability-bar-row strong { font-weight: 400; text-align: right; }
+.liability-bar-row small { display: inline-block; margin-left: 14px; font-size: var(--fs-xs); color: var(--text-4); }
+.liability-track { height: 6px; background: var(--fill-1); border-radius: var(--radius-sm); overflow: hidden; margin-top: 11px; }
+.liability-track > span { display: block; height: 100%; background: var(--debt); border-radius: var(--radius-sm); }
+.liability-empty { padding: 6px 24px 25px; }
+.liability-empty strong { color: var(--text-3); font-size: var(--fs-sm); font-weight: 400; }
+.liability-empty p { color: var(--text-4); font-size: var(--fs-xs); line-height: 1.8; margin: 10px 0 15px; }
+.liability-manager { display: grid; gap: 20px; }
+.liability-note-field { grid-column: 1 / -1; }
+.liability-note-field textarea { padding: 11px 12px; background: var(--bg-deep); border: 1px solid var(--line-solid); border-radius: var(--radius-md); color: var(--text-2); resize: vertical; }
+.liability-row { display: flex; align-items: center; gap: 16px; padding: 18px 0; border-top: 1px solid var(--fill-2); }
+.liability-row .asset-manager-name > strong { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+.liability-kind, .liability-settled { font-size: var(--fs-xs); color: var(--debt); border: 1px solid var(--debt-a); padding: 3px 6px; border-radius: var(--radius-sm); }
+.liability-settled { color: var(--text-3); border-color: var(--fill-4); }
+.liability-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.liability-actions .button { white-space: nowrap; }
+.liability-total { color: var(--debt); font-size: var(--fs-xs); overflow-wrap: anywhere; }
+.liability-confirm { padding: 5px 24px 24px; font-size: var(--fs-xs); line-height: 1.9; color: var(--text-3); }
+.liability-confirm .liability-actions { justify-content: flex-end; margin-top: 18px; }
+@media (max-width: 639px) {
+  .personal-balance-grid { gap: 15px; padding: 18px; grid-template-columns: 1fr; }
+  .personal-balance-grid > div { grid-template-columns: 1fr 1fr; align-items: center; }
+  .personal-balance-grid > div + div { border-left: 0; border-top: 1px solid var(--fill-2); padding-left: 0; padding-top: 15px; }
+  .personal-balance-grid small { display: block; margin: 5px 0 0; }
+  .personal-balance-grid strong { text-align: right; }
+  .personal-balance > p { padding: 13px 18px; }
+  .liability-bars { padding: 0 18px 20px; }
+  .liability-row { flex-wrap: wrap; gap: 12px; }
+  .liability-row .liability-actions { width: 100%; }
+  .liability-note-field textarea { font-size: var(--fs-lg); }
+}

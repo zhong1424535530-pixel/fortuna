@@ -1,0 +1,29 @@
+.app-select { display: inline-flex; align-items: center; gap: 9px; min-width: 0; width: 100%; min-height: var(--control-h); padding: 0 11px; border: 1px solid var(--line-solid); border-radius: var(--radius-md); background: var(--bg-deep); color: var(--text-2); text-align: left; font-size: var(--fs-xs); cursor: pointer; }
+.app-select:hover:not(:disabled), .app-select[data-state=open] { border-color: var(--mint-a4); background: var(--surface-3); }
+.app-select:disabled, fieldset:disabled .app-select { opacity: .6; cursor: default; }
+.app-select > span:nth-child(2) { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-select > svg { flex-shrink: 0; color: var(--text-3); }
+.app-select-compact { width: auto; max-width: 240px; padding: 0 10px; }
+.select-icon { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; flex-shrink: 0; color: var(--text-3); }
+.select-currency-icon { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--line-solid); color: var(--mint); font-size: var(--fs-md); }
+.select-overlay { position: fixed; inset: 0; z-index: 74; background: #01050338; }
+.select-menu { position: fixed; z-index: 75; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--dim); border-radius: var(--radius-lg); background: var(--surface-2); box-shadow: 0 18px 70px #0009; color: var(--text-2); }
+.select-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 7px; flex-shrink: 0; }
+.select-heading h2 { margin: 0; font-size: var(--fs-xs); font-weight: 500; color: var(--text-3); }
+.select-heading button { display: flex; padding: 4px; border: 0; background: none; color: var(--text-3); cursor: pointer; }
+.select-search { display: flex; align-items: center; gap: 7px; margin: 0 10px 7px; padding: 7px 9px; border: 1px solid var(--fill-3); border-radius: var(--radius-md); color: var(--text-3); }
+.select-search input { width: 100%; min-width: 0; border: 0; background: none; color: var(--text-2); font-size: var(--fs-xs); }
+.select-search:focus-within { border-color: var(--mint); outline: 2px solid var(--mint); outline-offset: 2px; }
+.select-options { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 3px 6px 7px; scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
+.select-group { padding: 9px 9px 5px; color: var(--text-3); font-size: var(--fs-xs); }
+.select-option { display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px; border: 1px solid transparent; border-radius: var(--radius-md); background: none; color: var(--text-2); text-align: left; font-size: var(--fs-xs); cursor: pointer; }
+.select-option:hover, .select-option:focus-visible { background: var(--fill-2); }
+.select-option[aria-selected=true] { border-color: var(--mint-a3); background: var(--mint-a1); }
+.select-option-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.select-option-label small { display: block; margin-top: 4px; font-size: var(--fs-xs); color: var(--text-4); }
+.select-option-trailing { flex-shrink: 0; font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }
+.select-check { flex-shrink: 0; color: var(--mint); }
+.select-empty { padding: 15px; margin: 0; color: var(--text-3); text-align: center; font-size: var(--fs-xs); }
+.app-select:focus-visible, .select-menu button:focus-visible { outline: 2px solid var(--mint); outline-offset: -2px; }
+.select-search input:focus-visible { outline: none; }
+@media (max-width: 600px) { .app-select, .select-search input { font-size: var(--fs-lg); } .select-option { min-height: 42px; } }

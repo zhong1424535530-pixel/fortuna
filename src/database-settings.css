@@ -1,0 +1,16 @@
+.database-settings { display: grid; gap: 24px; }
+.database-settings-body { padding: 22px 24px; }
+.database-status { display: flex; align-items: flex-start; gap: 14px; }
+.database-status svg { flex-shrink: 0; margin-top: 3px; }
+.database-status p, .database-note { color: var(--text-4); font-size: var(--fs-sm); line-height: 1.8; }
+.database-counts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; margin: 20px 0; }
+.database-counts > div { display: flex; justify-content: space-between; gap: 12px; }
+.database-counts dt { color: var(--text-4); }
+.database-counts dd { margin: 0; font-variant-numeric: tabular-nums; }
+.database-saved { display: block; margin-top: 6px; color: var(--text-4); font-size: var(--fs-xs); }
+.database-path { margin-top: 20px; font-size: var(--fs-xs); }
+.database-path summary { cursor: pointer; }
+.database-path code { display: block; overflow-wrap: anywhere; white-space: normal; }
+.database-confirm { display: flex; align-items: flex-start; gap: 9px; margin: 20px 0; line-height: 1.6; }
+.database-confirm input { margin-top: 5px; }
+@media (max-width: 600px) { .database-settings-body { padding: 18px 16px; } .database-counts { grid-template-columns: 1fr; } }

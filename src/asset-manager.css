@@ -1,0 +1,68 @@
+.asset-manager-page { display: grid; gap: 20px; padding-bottom: 28px; }
+.asset-manager-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.asset-manager-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.asset-manager-tabs > button { display: flex; align-items: center; gap: 9px; border: 1px solid transparent; border-radius: var(--radius-md); padding: 9px 14px; background: none; color: var(--text-3); font-size: var(--fs-sm); }
+.asset-manager-tabs > button.active { border-color: var(--mint-a3); background: var(--mint-a2); color: var(--mint); }
+.asset-manager-tabs > button > span { color: var(--warn); font-size: var(--fs-xs); }
+.asset-manager-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px 22px; padding: 16px 24px 22px; }
+.asset-manager-form label, .asset-manager-price-form label { display: flex; flex-direction: column; gap: 9px; color: var(--text-2); font-size: var(--fs-xs); }
+.asset-manager-form label > span { color: var(--text-4); font-size: var(--fs-xs); }
+.asset-manager-form input:not([type=file]), .asset-manager-price-form input { min-width: 0; width: 100%; height: var(--control-h); padding: 0 12px; color: var(--text-2); background: var(--bg-deep); border: 1px solid var(--line-solid); border-radius: var(--radius-md); }
+.asset-manager-form input::placeholder, .asset-manager-price-form input::placeholder { color: var(--text-4); }
+.asset-manager-icon-upload { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.asset-manager-icon-upload > small { width: 100%; color: var(--text-4); font-size: var(--fs-xs); }
+.asset-manager-file, .asset-manager-form label.asset-manager-file { position: relative; display: inline-flex; align-items: center; justify-content: center; flex-direction: row; gap: 7px; border: 1px solid var(--fill-4); background: var(--fill-1); color: var(--text-2); border-radius: var(--radius-md); padding: 9px 11px; cursor: pointer; font-size: var(--fs-xs); overflow: hidden; }
+.asset-manager-file input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.asset-manager-file:focus-within { outline: 2px solid var(--mint); outline-offset: 3px; }
+.asset-manager-file:hover { background: var(--mint-a2); }
+.asset-manager-file.small { flex-shrink: 0; padding: 8px 10px; }
+.asset-manager-file.disabled { opacity: .5; cursor: not-allowed; }
+.asset-manager-form-footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 6px; }
+.asset-manager-form-footer > .button { flex-shrink: 0; }
+.asset-manager-page .panel-heading { flex-wrap: wrap; align-items: center; gap: 15px; }
+.asset-manager-search { display: flex; align-items: center; gap: 8px; height: var(--control-h); padding: 0 10px; background: var(--bg-deep); border: 1px solid var(--line-solid); border-radius: var(--radius-md); color: var(--text-4); }
+.asset-manager-search input { min-width: 0; max-width: 150px; border: 0; background: none; font-size: var(--fs-xs); }
+.asset-manager-search:focus-within { border-color: var(--mint-a4); }
+.asset-manager-search input:focus-visible { outline: none; }
+.asset-manager-list { padding: 0 24px; }
+.asset-manager-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--fill-2); }
+.asset-manager-name { display: grid; gap: 6px; min-width: 0; flex: 1; }
+.asset-manager-name > strong { font-size: var(--fs-sm); font-weight: 500; color: var(--text-2); overflow-wrap: anywhere; }
+.asset-manager-name > span { font-size: var(--fs-xs); line-height: 1.6; color: var(--text-4); overflow-wrap: anywhere; }
+.asset-manager-name > time { color: var(--text-4); font-size: var(--fs-xs); line-height: 1.6; }
+.asset-manager-value { display: grid; grid-auto-flow: column; grid-auto-columns: 120px; gap: 4px 20px; min-width: 0; text-align: right; overflow-wrap: anywhere; }
+.asset-manager-value > strong { font-size: var(--fs-sm); font-weight: 400; color: var(--text-2); }
+.asset-manager-value > span { font-size: var(--fs-sm); color: var(--text-2); }
+.asset-manager-value > [data-label]::before { content: attr(data-label); display: block; margin-bottom: 5px; color: var(--text-4); font-size: var(--fs-xs); font-weight: 400; }
+.asset-manager-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
+.asset-manager-row-error { flex-basis: 100%; }
+.asset-manager-form-error { grid-column: 1 / -1; }
+.asset-manager-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.asset-manager-empty { padding: 32px 10px; text-align: center; color: var(--text-4); font-size: var(--fs-xs); }
+.asset-manager-error, .asset-manager-price-form { display: grid; gap: 18px; padding: 22px 24px 24px; }
+.asset-manager-price-hint { margin: 0; color: var(--text-4); font-size: var(--fs-xs); line-height: 1.8; }
+.asset-manager-price-form .button { justify-self: end; }
+@media (max-width: 639px) {
+  .asset-manager-form { grid-template-columns: 1fr; padding: 14px 18px 20px; }
+  .asset-manager-form input:not([type=file]), .asset-manager-price-form input, .asset-manager-search input { font-size: var(--fs-lg); }
+  .asset-manager-form-footer { flex-direction: column; align-items: stretch; gap: 14px; }
+  .asset-manager-list { padding: 0 18px; }
+  .asset-manager-page .panel-heading { flex-direction: column; align-items: stretch; gap: 12px; }
+  .asset-manager-search { width: 100%; }
+  .asset-manager-search input { max-width: none; flex: 1; }
+  .asset-manager-price-form { padding: 20px 18px; }
+  .asset-manager-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; gap: 4px; }
+  .asset-manager-tabs > button { justify-content: center; gap: 3px; padding: 9px 0; font-size: var(--fs-xs); white-space: nowrap; }
+  /* 手机上每项资产是一张卡片：名称、数值左右对照，文字居中，按钮等宽排满一行 */
+  .asset-manager-row { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 10px; padding: 18px 0; text-align: center; }
+  .asset-manager-row > .asset-manager-name { justify-items: center; }
+  .asset-manager-row > .asset-manager-value { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px 12px; width: 100%; padding: 10px 8px; text-align: center; background: var(--fill-1); border-radius: var(--radius-md); }
+  .asset-manager-value > strong:only-child { grid-column: 1 / -1; }
+  .asset-manager-row > .asset-manager-actions { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); justify-content: stretch; width: 100%; }
+  .asset-manager-actions > .asset-manager-file { padding: 0 10px; height: var(--control-h); }
+    .asset-manager-dialog-actions { justify-content: stretch; }
+  .asset-manager-dialog-actions > .button { flex: 1; }
+}
+
+.asset-manager-quote { align-self: end; padding-bottom: 10px; margin: 0; color: var(--text-3); font-size: var(--fs-xs); }
+.asset-manager-quote strong { color: var(--text-1); font-weight: 500; }

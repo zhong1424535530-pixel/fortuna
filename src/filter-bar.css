@@ -1,0 +1,23 @@
+/* 统一筛选栏：标签在上、控件在下、同一高度。电脑端一行排开，手机两列。 */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+.filter-field { display: grid; gap: 8px; min-width: 145px; flex: 1; color: var(--text-4); font-size: var(--fs-xs); }
+.filter-field.wide { flex: 2 1 240px; }
+.filter-field.fit { flex: 0 0 auto; min-width: 0; }
+.filter-label { line-height: 1.4; }
+.filter-bar .app-select, .filter-bar .return-range-trigger, .filter-bar .search-field, .filter-bar .filter-clear { height: var(--control-h); min-height: var(--control-h); box-sizing: border-box; width: 100%; }
+.filter-bar .return-range-trigger { justify-content: space-between; }
+.filter-bar .search-field { display: flex; flex-direction: row; align-items: center; gap: 7px; padding: 0 10px; }
+.filter-bar .search-field input { flex: 1; width: 100%; min-width: 0; height: 100%; min-height: 0; padding: 0; border: 0; background: none; border-radius: 0; }
+.filter-bar label.search-field input:focus-visible { outline: none; }
+.filter-bar .filter-clear { flex: 0 0 auto; width: auto; padding: 0 12px; white-space: nowrap; color: var(--text-3); border-color: var(--line-solid); }
+.filter-bar .filter-clear:hover { background: var(--mint-a2); border-color: var(--dim); }
+@media (max-width: 640px) {
+  .filter-bar { gap: 12px; }
+  .filter-field { min-width: 0; flex: 1 1 calc(50% - 6px); }
+  .filter-field.wide, .filter-field.fit { flex-basis: 100%; }
+  .filter-bar .filter-clear { flex: 1 1 100%; width: 100%; justify-content: center; }
+}
+.records-panel-body > .filter-bar { margin: 16px 0 20px; }
+.holdings-filter-bar { padding: 17px 20px; }
+.filter-bar .category-tabs { height: var(--control-h); }
+@media (max-width: 640px) { .holdings-filter-bar { padding: 15px 15px 17px; } .filter-bar .category-tabs { width: 100%; justify-content: space-between; } }

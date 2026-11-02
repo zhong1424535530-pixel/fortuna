@@ -1,0 +1,144 @@
+.account-page { display: grid; gap: 18px; }
+.account-page-detail .equity-breakdown { background: var(--summary-card-background); border-color: var(--summary-card-border); }
+.account-toolbar-display { display: none; }
+.account-detail-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.account-page-caption { font-size: var(--fs-xs); color: var(--text-4); line-height: 1.8; margin: 0; }
+.account-page-source-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.account-page-source-card { padding: 21px; border: 1px solid var(--summary-card-border); border-radius: var(--radius-lg); background: var(--summary-card-background); text-align: left; min-width: 0; }
+.account-page-source-card:hover { border-color: var(--mint-a4); background: var(--summary-card-background); }
+.account-page-card-heading { display: flex; align-items: flex-start; gap: 10px; min-height: 72px; }
+.account-page-card-heading .connection-status { flex-shrink: 0; margin-top: 3px; }
+.account-page-source-heading { display: flex; align-items: flex-start; gap: 11px; min-width: 0; flex: 1; background: transparent; border: 0; padding: 0; text-align: left; }
+.account-page-source-heading > span { min-width: 0; flex: 1; }
+.account-page-source-heading strong { display: block; font-size: var(--fs-sm); font-weight: 500; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.account-page-source-heading small { display: block; color: var(--text-4); font-size: var(--fs-xs); margin-top: 4px; line-height: 1.65; overflow-wrap: anywhere; user-select: text; font-variant-numeric: tabular-nums; }
+.account-page-source-icon, .account-page-source-name { background: transparent; border: 0; padding: 0; text-align: left; }
+.account-page-source-icon { flex-shrink: 0; }
+.account-page-source-name { display: flex; align-items: center; gap: 8px; width: 100%; }
+.account-page-source-name strong { flex: 1; min-width: 0; }
+.account-page-source-name > svg { color: var(--text-4); flex-shrink: 0; }
+.account-page-wallet-heading .asset-avatar { border-radius: 0; background: transparent; overflow: visible; }
+.account-page-identity-line { display: flex; align-items: flex-start; gap: 5px; min-width: 0; }
+.account-page-identity-line > :first-child { min-width: 0; overflow-wrap: anywhere; }
+.account-page-copy { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; background: transparent; border: 0; padding: 4px; color: var(--text-3); font-size: var(--fs-xs); }
+.account-page-copy:hover { color: var(--mint); }
+.account-page-source-value { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; margin: 18px 0 21px; background: transparent; border: 0; padding: 0; text-align: left; width: 100%; }
+.account-page-source-value small { color: var(--text-4); font-size: var(--fs-xs); }
+.account-page-asset-preview { margin-left: auto; text-align: right; }
+.account-page-asset-preview > small { color: var(--text-4); font-size: var(--fs-xs); }
+.account-page-asset-icons { display: flex; justify-content: flex-end; margin-top: 8px; padding-left: 7px; }
+.account-page-asset-icons > span { position: relative; display: inline-flex; margin-left: -7px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface-2); }
+.account-page-asset-more { width: 26px; height: 26px; align-items: center; justify-content: center; background: var(--surface-3); color: var(--text-3); font-size: var(--fs-md); }
+.account-page-source-value strong { display: block; color: var(--text-1); font-size: var(--fs-xl); margin-top: 5px; font-weight: 500; overflow-wrap: anywhere; }
+.account-page-card-updated { font-size: var(--fs-xs); line-height: 1.8; margin: 12px 0; color: var(--text-4); }
+.account-page-card-actions { display: flex; align-items: center; gap: 7px; }
+.account-page-card-actions .button { font-size: var(--fs-xs); min-height: 31px; padding: 6px 10px; }
+.account-page-card-actions .icon-button { margin-left: auto; color: var(--text-4); }
+.account-page-source-icon:focus-visible, .account-page-source-name:focus-visible, .account-page-copy:focus-visible, .account-page-source-value:focus-visible { outline: 1px solid var(--mint-a5); outline-offset: 5px; border-radius: var(--radius-sm); }
+.account-page-empty { min-height: 210px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px 18px; color: var(--text-4); text-align: center; }
+.account-page-empty h3 { font-size: var(--fs-sm); font-weight: 500; color: var(--text-2); margin: 13px 0 7px; }
+.account-page-empty p { font-size: var(--fs-xs); line-height: 1.8; margin: 0 0 12px; }
+.account-page-empty-short { min-height: 130px; }
+.account-page-detail-heading { display: flex; align-items: center; gap: 13px; padding: 23px 22px 15px; }
+.account-page-detail-heading h2 { font-size: var(--fs-lg); font-weight: 500; margin: 0; }
+.account-page-detail-heading p { font-size: var(--fs-xs); color: var(--text-4); margin: 5px 0 0; }
+.account-page-demo-badge { margin-left: auto; font-size: var(--fs-xs); color: var(--warn); border: 1px solid var(--warn-a2); padding: 4px 8px; border-radius: var(--radius-sm); white-space: nowrap; }
+.account-page-wallet-info { display: flex; flex-wrap: wrap; gap: 18px 32px; margin: 0; padding: 4px 22px 15px; font-size: var(--fs-xs); }
+.account-page-wallet-info > div { display: flex; gap: 12px; min-width: 0; }
+.account-page-wallet-info dt { color: var(--text-4); }
+.account-page-wallet-info dd { margin: 0; color: var(--text-2); }
+.account-page-detail-note, .account-page-price-warning { display: flex; align-items: flex-start; gap: 7px; margin: 0; color: var(--text-4); font-size: var(--fs-xs); line-height: 1.8; }
+.account-page-detail-note { padding: 0 22px 18px; }
+.account-page-detail-note svg, .account-page-price-warning svg { margin-top: 3px; }
+.account-page-price-warning { color: var(--warn); background: var(--warn-a1); padding: 11px 13px; border: 1px solid var(--warn-a2); border-radius: var(--radius-sm); }
+.account-page-account-switch { position: relative; display: flex; overflow-x: auto; gap: 8px; padding: 0 22px 20px; scrollbar-width: thin; }
+.account-page-account-switch button { border: 1px solid var(--fill-3); border-radius: var(--radius-sm); background: var(--fill-1); padding: 9px 13px; text-align: left; color: var(--text-3); min-width: 120px; flex-shrink: 0; }
+.account-page-account-switch strong { font-size: var(--fs-xs); font-weight: 500; display: block; }
+.account-page-account-switch small { font-size: var(--fs-xs); margin-top: 4px; color: var(--text-4); display: block; }
+.account-page-network-switch button { min-width: 0; }
+.account-page-binance-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); overflow: visible; gap: 10px; padding-bottom: 14px; }
+.account-page-binance-groups button { min-width: 0; padding: 13px 15px; border-color: var(--summary-card-border); background: var(--summary-card-background); }
+.account-page-binance-groups button.active { border-color: var(--mint-a4); background: var(--summary-card-background); }
+.account-page-binance-groups button > span { display: block; font-size: var(--fs-lg); color: var(--text-1); margin-top: 12px; overflow-wrap: anywhere; }
+.account-page-group-note { margin: 0; padding: 0 22px 12px; font-size: var(--fs-xs); line-height: 1.9; color: var(--text-4); }
+.account-page-unread { color: var(--warn); }
+.account-page-coverage { margin: 0 22px 18px; font-size: var(--fs-xs); color: var(--text-3); }
+.account-page-coverage summary, .account-page-original-accounts summary { cursor: pointer; }
+.account-page-coverage > div { border-left: 1px solid var(--fill-3); padding-left: 13px; margin-top: 12px; color: var(--text-3); line-height: 1.9; }
+.account-page-coverage p { margin: 8px 0; overflow-wrap: anywhere; }
+.account-page-original-accounts { border-top: 1px solid var(--fill-2); }
+.account-page-original-accounts > summary { padding: 15px 22px; color: var(--text-3); font-size: var(--fs-xs); }
+.account-page-original-accounts > summary > span { margin-left: 12px; color: var(--text-2); }
+.account-page-original-accounts .account-page-account-switch { flex-wrap: wrap; }
+.account-page-warning-list { display: grid; gap: 6px; }
+.account-page-warning-list p { margin: 0; overflow-wrap: anywhere; }
+.account-page-asset-name .account-page-provenance { color: var(--text-4); line-height: 1.6; overflow-wrap: anywhere; }
+.account-page-history > .panel-heading { flex-wrap: wrap; }
+.account-page-history > .period-change { padding: 0 22px 6px; }
+.account-page-history > .account-page-caption { padding: 0 22px 17px; }
+.account-page-asset-list { margin-top: 19px; }
+.account-page-asset-labels, .account-page-asset-row { display: grid; grid-template-columns: 112px repeat(3, minmax(85px, 1fr)) minmax(80px, .8fr) minmax(90px, 1fr) 16px; gap: 10px; align-items: center; padding: 13px 22px; text-align: right; }
+.account-page-asset-labels { border-block: 1px solid var(--fill-1); background: var(--fill-1); color: var(--text-4); font-size: var(--fs-xs); }
+.account-page-asset-labels > :first-child { text-align: left; }
+.account-page-asset-row { background: none; border: 0; border-bottom: 1px solid var(--fill-2); width: 100%; color: var(--text-3); font-size: var(--fs-xs); }
+.account-page-asset-row:last-child { border-bottom: 0; }
+.account-page-asset-row:hover { background: var(--fill-1); }
+.account-page-asset-name { display: flex; align-items: center; gap: 10px; text-align: left; min-width: 0; }
+.account-page-asset-name > span:not(.asset-avatar) { min-width: 0; flex: 1; }
+.account-page-asset-name strong, .account-page-asset-name small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-page-asset-change > small, .account-page-asset-today-pnl > small { display: none; }
+.account-page-asset-name strong { display: block; color: var(--text-2); font-weight: 500; font-size: var(--fs-xs); }
+.account-page-asset-name small { display: block; color: var(--text-4); font-size: var(--fs-xs); margin-top: 4px; }
+.account-page-asset-quantity > small, .account-page-asset-price > small, .account-page-asset-value > small { display: none; }
+.account-page-asset-value { color: var(--text-1); }
+.account-page-asset-row > svg { color: var(--text-4); }
+.account-page-contract-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; padding: 19px 22px; font-size: var(--fs-xs); color: var(--text-4); }
+.account-page-contract-summary strong { font-size: var(--fs-sm); font-weight: 500; color: var(--text-2); margin-left: 8px; }
+.account-page-contract-summary > small { color: var(--warn); font-size: var(--fs-xs); }
+@media (max-width: 1199px) {
+  .account-page-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .account-page-asset-labels, .account-page-asset-row { grid-template-columns: 112px repeat(3, minmax(70px, 1fr)) minmax(75px, .8fr) minmax(85px, 1fr) 13px; gap: 8px; padding-left: 17px; padding-right: 17px; }
+}
+@media (min-width: 768px) {
+  .account-page-asset-labels, .account-page-asset-row { text-align: center; }
+  .account-page-asset-labels > :first-child { text-align: center; }
+}
+@media (max-width: 767px) {
+  .account-page { gap: 14px; }
+  .account-detail-toolbar { gap: 8px; }
+  .account-detail-toolbar > .button { padding-inline: 9px; font-size: var(--fs-xs); }
+  .accounts-title-display { display: none; }
+  .account-toolbar-display { display: inline-flex; flex: 0 0 100%; }
+  .account-page-source-grid { gap: 10px; }
+  .account-page-source-card { padding: 16px; }
+  .account-page-source-heading { gap: 8px; }
+  .account-page-source-heading strong { font-size: var(--fs-xs); }
+  .account-page-source-value strong { font-size: var(--fs-xl); }
+  .account-page-detail-heading { padding: 20px 17px 15px; }
+  .account-page-detail-heading h2 { font-size: var(--fs-lg); }
+  .account-page-detail-note, .account-page-wallet-info { padding-inline: 17px; }
+  .account-page-account-switch { padding: 0 17px 18px; }
+  .account-page-binance-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .account-page-group-note, .account-page-original-accounts > summary { padding-inline: 17px; }
+  .account-page-coverage { margin-inline: 17px; }
+  .account-page-history > .period-change,
+  .account-page-history > .account-page-caption { padding-inline: 17px; }
+  .account-page-asset-labels { display: none; }
+  .account-page-asset-list { margin-top: 13px; }
+  .account-page-asset-row { grid-template-columns: minmax(90px, 1fr) minmax(95px, 1fr) 13px; gap: 10px; }
+  .account-page-asset-name { grid-column: 1; grid-row: 1 / 3; align-self: start; }
+  .account-page-asset-quantity { grid-column: 2; grid-row: 1; }
+  .account-page-asset-price { grid-column: 1; grid-row: 3; text-align: left; font-size: var(--fs-xs); }
+  .account-page-asset-value { grid-column: 2; grid-row: 2; }
+  .account-page-asset-change { grid-column: 1; grid-row: 4; text-align: left; }
+  .account-page-asset-today-pnl { grid-column: 2; grid-row: 4; }
+  .account-page-asset-change, .account-page-asset-today-pnl { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+  .account-page-asset-today-pnl { justify-content: flex-end; }
+  .account-page-asset-change > small, .account-page-asset-today-pnl > small { display: inline; font-size: var(--fs-xs); color: var(--text-4); }
+  .account-page-asset-quantity > small, .account-page-asset-price > small, .account-page-asset-value > small { display: inline; margin-right: 7px; font-size: var(--fs-xs); color: var(--text-4); }
+  .account-page-asset-row > svg { grid-column: 3; grid-row: 1 / 4; }
+  .account-page-contract-summary { padding-inline: 17px; }
+}
+@media (max-width: 479px) {
+  .account-page-source-grid { grid-template-columns: 1fr; }
+}
