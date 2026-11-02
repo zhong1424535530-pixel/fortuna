@@ -1,4 +1,12 @@
-# 个人投资管理器
+<div align="center">
+
+# Fortuna · 个人投资管理器
+
+**自己部署的个人资产看板：交易所、链上钱包、股票基金现金，一个页面看清净资产。**
+
+![license](https://img.shields.io/badge/license-MIT-3ddc97) ![node](https://img.shields.io/badge/node-%E2%89%A522.13-3ddc97) ![self-hosted](https://img.shields.io/badge/self--hosted-yes-3ddc97)
+
+</div>
 
 自己部署的个人资产看板：把币安、Gate、Bitunix 交易所账户、链上钱包和手动记录的资产（股票、基金、现金、负债）汇总到一个页面，看净资产、持仓、合约、收益和交易记录。数据保存在你自己的服务器上，手机和电脑都能用浏览器访问。
 
@@ -6,6 +14,12 @@
 - 登录：用户名 + 谷歌验证器动态码，没有密码。
 - 数据：SQLite 单文件，在设置页手动导出/导入备份；交易记录永久保留，净值走势按时间自动压缩（三年约 100 MB）。
 - 交易所密钥：AES-256-GCM 加密后保存在服务器上。
+
+## 📸 界面预览
+
+![资产总览](docs/images/overview.webp)
+
+![加密资产](docs/images/crypto.webp)
 
 ## 一条命令安装
 
@@ -57,6 +71,30 @@ npm run check:all
 ```
 
 手动部署步骤和上线验收清单见 [deploy/README.md](deploy/README.md)；开发过程记录见 [docs/开发日志.md](docs/开发日志.md)。
+
+## 💬 社区
+
+**[Trading 情报局](https://coincia.top/)**：面向全球市场的中文情报社区，始于 2022 年，累计服务会员 800+，聚合 100+ 全球优质 KOL，覆盖美股、Crypto、A 股、链上交易与空投，提供策略统计、自动跟单工具和在线资料库。加入社区免费，入口见 👉 [coincia.top](https://coincia.top/)。
+
+## ☕ 请作者喝杯咖啡
+
+觉得这个工具有用，欢迎赞赏支持，谢谢！
+
+| 微信赞赏 | USDT（TRON / TRC20） |
+| :---: | :---: |
+| <img src="docs/images/donate.jpg" width="220"> | `TLow7mj9qfmCbPSJ3JhqoEgqFLBMjYoqP7` |
+
+## 👤 关于作者
+
+**情报局（周 Sir）**，Trading 情报局创始人，负责社区规划、产品方向与技术开发。想交流、合作或加社区，加我微信：
+
+<img src="docs/images/wechat.jpg" width="220">
+
+## 🧩 我的其他项目
+
+- **[qingbaoju-bot（情报局跟单宝）](https://github.com/zhong1424535530-pixel/qingbaoju-bot)**：KOL 交易信号跟单工具，监听信号并按规则在 Binance / Bybit 合约账户自动下单，支持模拟盘和实盘。
+
+觉得好用的话，点一下右上角的 ⭐ Star，就是最大的支持。
 
 ## 免责声明
 
