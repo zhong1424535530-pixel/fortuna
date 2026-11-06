@@ -39,7 +39,7 @@ export function IssueHint({ message, important = false }: { message: string; imp
       onClick={event => { event.stopPropagation(); show() }}
       onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); show() } }}
       onKeyUp={event => { if (event.key === 'Enter' || event.key === ' ') event.stopPropagation() }}>
-      <CircleAlert size={14} strokeWidth={1.8} aria-hidden />
+      <CircleAlert size={16} strokeWidth={2} aria-hidden />
     </span>
     {position && createPortal(<span ref={popup} id={id} role="tooltip" className="issue-tooltip" style={{ left: position.left, top: position.top, maxHeight: Math.max(60, position.above ? position.top - 12 : window.innerHeight - position.top - 12), transform: position.above ? 'translateY(-100%)' : undefined }} onMouseEnter={cancelHide} onMouseLeave={hideLater}>{message}</span>, document.body)}
   </>

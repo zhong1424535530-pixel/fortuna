@@ -15,7 +15,7 @@ import { allocations, assetValueCents, formatMoney, hasLocalValuation, historyFo
 import type { ContractPosition, Currency, HistoryPoint, Holding, Period } from '../data/portfolio'
 import { overviewHoldings } from '../data/overview'
 import type { ReturnDay } from '../data/returns-analysis'
-import { returnDaySlots } from '../data/returns-analysis'
+import { groupWeeks, isWeekly, returnDaySlots } from '../data/returns-analysis'
 import type { ReturnCurves } from '../data/returns-curve'
 
 echarts.use([BarChart, LineChart, PieChart, GridComponent, TooltipComponent, AriaComponent, CanvasRenderer])
@@ -28,7 +28,13 @@ function compactAmount(value: number) {
 }
 const lineGrid = { left: 0, right: 8, top: 14, bottom: 0, containLabel: true }
 const axisLabelStyle = (extra: object = {}) => ({ color: themeColor('text-4'), fontSize: 12, ...extra })
-const amountAxis = (formatter: (value: number) => string = compactAmount, extra: object = {}) => ({ type: 'value', splitNumber: 2, axisLabel: axisLabelStyle({ margin: 8, formatter }), splitLine: { lineStyle: { color: themeColor('line-solid'), type: 'dashed' } }, ...extra })
+// 苹果式图表：系统字体、玻璃提示框、发光折线、渐变面积；首次出现 0.9 秒缓出，数据更新只做短过渡。
+const FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif'
+const motionOptions = { animation: true, animationDuration: 900, animationEasing: 'cubicOut', animationDurationUpdate: 300 } as const
+const tip = () => ({ backgroundColor: 'rgba(40,40,46,.88)', borderColor: 'rgba(255,255,255,.2)', borderWidth: 1, borderRadius: 14, padding: [10, 14], shadowBlur: 30, shadowColor: 'rgba(0,0,0,.45)', textStyle: { color: themeColor('text-1'), fontSize: 13, fontFamily: FONT } })
+const tint = (alpha: number, name = 'mint') => { const hex = themeColor(name); return `rgba(${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)},${alpha})` }
+const glowArea = () => ({ color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: tint(.3) }, { offset: 1, color: tint(0) }]) })
+const amountAxis = (formatter: (value: number) => string = compactAmount, extra: object = {}) => ({ type: 'value', splitNumber: 2, axisLabel: axisLabelStyle({ margin: 8, formatter }), splitLine: { lineStyle: { color: themeColor('fill-2'), type: [3, 5] } }, ...extra })
 const edgeLabels = (count: number) => count <= 7 ? 0 : (index: number) => index === 0 || index === count - 1 || index === Math.floor((count - 1) / 2)
 
 function Chart({ option, label, className = '', onSelect }: { option: EChartsCoreOption; label: string; className?: string; onSelect?: (id: string) => void }) {
@@ -62,7 +68,8 @@ function Chart({ option, label, className = '', onSelect }: { option: EChartsCor
 }
 
 export function IncomeChart({ days, unit, hidden, daily, label, dateRange }: { days: ReturnDay[]; unit: string; hidden: boolean; daily: boolean; label: string; dateRange?: { start: number; end: number } }) {
-  const plottedDays = daily && dateRange ? returnDaySlots(days, dateRange.start, dateRange.end) : days
+  const slots = daily && dateRange ? returnDaySlots(days, dateRange.start, dateRange.end) : days
+  const plottedDays = daily && isWeekly(slots) ? groupWeeks(slots) : slots
   const values = plottedDays.map(day => { const value = daily ? day.amount : day.cumulative; return value === null ? null : Number(value) })
   // 同一年内只写月/日：完整日期太长，最后一个标签放不下时会被隐藏，却仍给它留出右边的空白。
   const shortDates = plottedDays.every(day => /^\d{4}-\d{2}-\d{2}$/.test(day.label)) && (daily || new Set(plottedDays.map(day => day.label.slice(0, 4))).size === 1)
@@ -70,13 +77,13 @@ export function IncomeChart({ days, unit, hidden, daily, label, dateRange }: { d
   // 页面每次刷新都会生成新数组；按内容判断，数据没变就不重画图表。
   const dataKey = plottedDays.map(day => day.label).join() + '|' + values.join()
   const option = useMemo<EChartsCoreOption>(() => ({
-    animation: false,
-    textStyle: { fontFamily: '"PingFang SC", "Microsoft YaHei", sans-serif' },
+    ...motionOptions,
+    textStyle: { fontFamily: FONT },
     grid: lineGrid,
-    tooltip: { renderMode: 'richText', trigger: 'axis', confine: true, backgroundColor: themeColor('surface-2'), borderColor: themeColor('line-solid'), textStyle: { color: themeColor('text-1'), fontSize: 12 }, valueFormatter: (value: unknown) => value === null || value === undefined || value === '-' ? t('无已记录平仓') : `${Number(value).toFixed(2)} ${unit}` },
+    tooltip: { renderMode: 'richText', trigger: 'axis', confine: true, ...tip(), valueFormatter: (value: unknown) => value === null || value === undefined || value === '-' ? t('无已记录平仓') : `${Number(value).toFixed(2)} ${unit}` },
     xAxis: { type: 'category', boundaryGap: daily, data: plottedDays.map(day => day.label), axisLine: { lineStyle: { color: themeColor('line-solid') } }, axisTick: { show: false }, axisLabel: axisLabelStyle({ hideOverlap: true, formatter: (value: string) => shortDates ? value.slice(5).replace('-', '/') : value, interval: edgeLabels(plottedDays.length) }) },
     yAxis: amountAxis(compactAmount, { scale: !daily }),
-    series: [{ type: daily ? 'bar' : 'line', name: label, data: values.map(value => ({ value, itemStyle: { color: value !== null && value < 0 ? themeColor('down') : themeColor('mint') } })), barMaxWidth: 26, showSymbol: days.length < 3, symbolSize: 7, smooth: false, lineStyle: { color: themeColor('mint'), width: 2 }, areaStyle: daily ? undefined : { color: 'rgba(159,255,210,.06)' } }],
+    series: [{ type: daily ? 'bar' : 'line', name: label, data: values.map(value => ({ value, itemStyle: { color: value !== null && value < 0 ? themeColor('down') : themeColor('mint'), borderRadius: value !== null && value < 0 ? [3, 3, 8, 8] : [8, 8, 3, 3] } })), barMaxWidth: 26, showSymbol: days.length < 3, symbolSize: 7, smooth: false, lineStyle: { color: themeColor('mint'), width: 3, cap: 'round', join: 'round', shadowBlur: 14, shadowColor: tint(.35) }, areaStyle: daily ? undefined : glowArea() }],
   }), [dataKey, unit, daily, label, shortDates])
   if (hidden) return <HiddenChart className="returns-income-chart" />
   if (!days.length || !drawable) return <div className="chart-empty returns-income-chart" role="status">{drawable ? t('所选范围暂无可展示的收支记录') : t('金额超出图表显示范围，请查看明细')}</div>
@@ -89,10 +96,10 @@ export function ContractRatioChart({ parts, label, hidden, children }: { parts: 
   const total = present.reduce((sum, part) => sum + part.value, 0)
   const partsKey = JSON.stringify(parts)
   const option = useMemo<EChartsCoreOption>(() => ({
-    animation: false,
+    ...motionOptions,
     tooltip: { show: false },
     series: [{
-      type: 'pie', radius: ['66%', '96%'], center: ['50%', '50%'], startAngle: 90, padAngle: present.length > 1 ? 2 : 0,
+      type: 'pie', radius: ['70%', '96%'], center: ['50%', '50%'], startAngle: 90, padAngle: present.length > 1 ? 3 : 0, itemStyle: { borderRadius: 6 },
       label: { show: false }, labelLine: { show: false }, emphasis: { disabled: true }, stillShowZeroSum: false,
       data: present.length ? present.map(part => ({ name: part.name, value: part.value, itemStyle: { color: part.color } })) : [{ name: t('暂无已核对平仓'), value: 1, itemStyle: { color: themeColor('line-solid') } }],
     }],
@@ -116,11 +123,11 @@ export function ReturnsComparisonChart({ curves, unit, hidden }: { curves: Retur
   }
   const days = Math.max(...series.map(item => item.curve.days))
   const option: EChartsCoreOption = {
-    animation: false,
-    textStyle: { fontFamily: '"PingFang SC", "Microsoft YaHei", sans-serif' },
+    ...motionOptions,
+    textStyle: { fontFamily: FONT },
     grid: { ...lineGrid, top: 28 },
     tooltip: {
-      renderMode: 'richText', trigger: 'axis', confine: true, backgroundColor: themeColor('surface-2'), borderColor: themeColor('line-solid'), textStyle: { color: themeColor('text-1'), fontSize: 12 },
+      renderMode: 'richText', trigger: 'axis', confine: true, ...tip(),
       formatter: (params: unknown) => {
         const items = (Array.isArray(params) ? params : [params]) as { axisValue: number }[]
         const day = Math.round(Number(items[0]?.axisValue))
@@ -139,8 +146,8 @@ export function ReturnsComparisonChart({ curves, unit, hidden }: { curves: Retur
       type: 'line', name: item.name,
       data: item.curve.points.map((point, at) => { const value = [point.day, point.amount === null ? null : Number(point.amount)]; return at === lastIndex ? { value, label: { show: true, position: 'top', distance: 10, color: item.color, fontSize: 12, formatter: () => money(point.amount!) } } : value }),
       connectNulls: false, smooth: 0.18, smoothMonotone: 'x', showSymbol: true, symbol: 'circle', symbolSize: (_value: unknown, params: { dataIndex: number }) => knownCount < 3 ? 4 : params.dataIndex === lastIndex ? 5 : 0,
-      lineStyle: { color: item.color, width: 2, type: index ? 'dashed' : 'solid' }, itemStyle: { color: item.color },
-      areaStyle: index ? undefined : { color: 'rgba(159,255,210,.04)' },
+      lineStyle: { color: item.color, width: index ? 2 : 3, type: index ? 'dashed' : 'solid', cap: 'round', shadowBlur: index ? 0 : 14, shadowColor: tint(.35) }, itemStyle: { color: item.color },
+      areaStyle: index ? undefined : glowArea(),
     }}),
   }
   return <div className="returns-period-curve">
@@ -153,13 +160,13 @@ export function ContractExposureChart({ items, currency, hidden }: { items: Cont
   const option = useMemo<EChartsCoreOption>(() => {
     const summary = summarizeContracts(items)
     return {
-      animation: false,
-      textStyle: { fontFamily: '"PingFang SC", "Microsoft YaHei", sans-serif' },
+      ...motionOptions,
+      textStyle: { fontFamily: FONT },
       grid: { left: 42, right: 14, top: 14, bottom: 28 },
-      tooltip: { renderMode: 'richText', trigger: 'item', confine: true, backgroundColor: themeColor('surface-2'), borderColor: themeColor('line-solid'), textStyle: { color: themeColor('text-1'), fontSize: 12 }, valueFormatter: (value: unknown) => formatMoney(Number(value), currency) },
-      xAxis: { type: 'value', min: 0, splitNumber: 3, axisLabel: { color: themeColor('text-4'), fontSize: 12, hideOverlap: true, formatter: (value: number) => formatMoney(value, currency, false, 0) }, splitLine: { lineStyle: { color: themeColor('line-solid'), type: 'dashed' } } },
+      tooltip: { renderMode: 'richText', trigger: 'item', confine: true, ...tip(), valueFormatter: (value: unknown) => formatMoney(Number(value), currency) },
+      xAxis: { type: 'value', min: 0, splitNumber: 3, axisLabel: { color: themeColor('text-4'), fontSize: 12, hideOverlap: true, formatter: (value: number) => formatMoney(value, currency, false, 0) }, splitLine: { lineStyle: { color: themeColor('fill-2'), type: [3, 5] } } },
       yAxis: { type: 'category', inverse: true, data: [t('做多'), t('做空')], axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: themeColor('text-3'), fontSize: 12 } },
-      series: [{ type: 'bar', name: t('合约仓位金额'), barWidth: 12, showBackground: true, backgroundStyle: { color: themeColor('fill-1') }, data: [{ value: summary.longNotionalCents, itemStyle: { color: themeColor('mint'), borderRadius: 2 } }, { value: summary.shortNotionalCents, itemStyle: { color: themeColor('down'), borderRadius: 2 } }] }],
+      series: [{ type: 'bar', name: t('合约仓位金额'), barWidth: 12, showBackground: true, backgroundStyle: { color: themeColor('fill-2'), borderRadius: 6 }, data: [{ value: summary.longNotionalCents, itemStyle: { color: themeColor('mint'), borderRadius: 6 } }, { value: summary.shortNotionalCents, itemStyle: { color: themeColor('down'), borderRadius: 6 } }] }],
     }
   }, [items, currency])
   if (hidden) return <HiddenChart className="contract-exposure-chart" />
@@ -176,14 +183,13 @@ export function HistoryChart({ period, currency, hidden, endValue, price = false
     const max = Math.max(...values)
     const range = max - min || Math.max(Math.abs(max) * .01, 1)
     return {
-      animation: false,
-      textStyle: { fontFamily: '"PingFang SC", "Microsoft YaHei", sans-serif' },
+      ...motionOptions,
+      textStyle: { fontFamily: FONT },
       grid: compact ? { left: 22, right: 24, top: 8, bottom: 22 } : lineGrid,
       tooltip: {
-        renderMode: 'richText', trigger: 'axis', confine: true, backgroundColor: themeColor('surface-2'), borderColor: themeColor('line-solid'), padding: 12,
-        textStyle: { color: themeColor('text-1'), fontSize: 12 },
+        renderMode: 'richText', trigger: 'axis', confine: true, ...tip(),
         valueFormatter: (value: unknown) => typeof value === 'number' ? new Intl.NumberFormat('zh-CN', { style: 'currency', currency }).format(value) : '—',
-        axisPointer: { type: 'line', lineStyle: { color: themeColor('text-4'), type: 'dashed' } },
+        axisPointer: { type: 'line', lineStyle: { color: 'rgba(255,255,255,.35)', width: 1 } },
       },
       xAxis: {
         type: 'category', boundaryGap: false, data: points.map(point => point.label),
@@ -192,9 +198,9 @@ export function HistoryChart({ period, currency, hidden, endValue, price = false
       },
       yAxis: amountAxis(price ? value => value.toLocaleString('zh-CN', { maximumFractionDigits: 1 }) : compactAmount, { show: !compact, min: Math.floor(min - range * .25), max: Math.ceil(max + range * .2) }),
       series: [{
-        type: 'line', name: pnl ? t('浮动盈亏') : price ? t('价格') : t('资产估值'), data: values, smooth: pnl ? false : .2, symbol: 'circle', showSymbol: false, symbolSize: 6,
-        lineStyle: { color: themeColor('mint'), width: 2 }, itemStyle: { color: themeColor('mint'), borderColor: themeColor('surface-3'), borderWidth: 4 },
-        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(159,255,210,0.14)' }, { offset: 1, color: 'rgba(159,255,210,0)' }]) },
+        type: 'line', name: pnl ? t('浮动盈亏') : price ? t('价格') : t('资产估值'), data: values, smooth: pnl ? false : .35, symbol: 'circle', showSymbol: false, symbolSize: 6,
+        lineStyle: { color: themeColor('mint'), width: 3, cap: 'round', join: 'round', shadowBlur: 14, shadowColor: tint(.35) }, itemStyle: { color: themeColor('mint'), borderColor: '#fff', borderWidth: 2 },
+        areaStyle: glowArea(),
       }],
     }
   }, [points, currency, price, pnl, compact, multiplier])
@@ -230,12 +236,12 @@ export function MajorHoldingsChart({ currency, hidden, onSelect, onViewAll }: { 
 
 export function AllocationChart({ currency, hidden, onSelect }: { currency: Currency; hidden: boolean; onSelect: (name: string) => void }) {
   const option = useMemo<EChartsCoreOption>(() => ({
-    animation: false,
-    tooltip: { renderMode: 'richText', trigger: 'item', confine: true, backgroundColor: themeColor('surface-2'), borderColor: themeColor('line-solid'), textStyle: { color: themeColor('text-1'), fontSize: 12 }, formatter: (item: { name: string; value: unknown }) => `${t(item.name)}: ${formatMoney(Number(item.value), currency)}` },
+    ...motionOptions,
+    tooltip: { renderMode: 'richText', trigger: 'item', confine: true, ...tip(), formatter: (item: { name: string; value: unknown }) => `${t(item.name)}: ${formatMoney(Number(item.value), currency)}` },
     series: [{
-      type: 'pie', radius: ['45%', '90%'], center: ['50%', '50%'], startAngle: 90, padAngle: 3, stillShowZeroSum: false,
-      label: { show: false, position: 'inside', color: themeColor('on-mint'), fontSize: 13, fontWeight: 500, formatter: (item: { percent?: number }) => `${(item.percent ?? 0).toFixed(1)}%` }, labelLine: { show: false }, emphasis: { scaleSize: 2 },
-      data: allocations.flatMap(item => item.valueCents <= 0 ? [] : [{ name: item.name, value: item.valueCents, itemStyle: { color: item.color, borderRadius: 2 }, label: { show: assetValueCents > 0 && item.valueCents / assetValueCents >= 0.12 } }]),
+      type: 'pie', radius: ['64%', '90%'], center: ['50%', '50%'], startAngle: 90, padAngle: 3, stillShowZeroSum: false,
+      label: { show: false, position: 'inside', color: themeColor('on-mint'), fontSize: 13, fontWeight: 500, formatter: (item: { percent?: number }) => `${(item.percent ?? 0).toFixed(1)}%` }, labelLine: { show: false }, emphasis: { scaleSize: 6, itemStyle: { shadowBlur: 20, shadowColor: 'rgba(0,0,0,.4)' } },
+      data: allocations.flatMap(item => item.valueCents <= 0 ? [] : [{ name: item.name, value: item.valueCents, itemStyle: { color: item.color, borderRadius: 12 }, label: { show: false } }]),
     }],
   }), [currency, allocations, assetValueCents])
   const container = useRef<HTMLDivElement>(null)

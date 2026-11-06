@@ -13,7 +13,7 @@ const readName = () => { try { return localStorage.getItem(NAME_KEY) ?? '' } cat
 
 function Brand() {
   return <div className="login-brand">
-    <span className="login-mark" aria-hidden><Mark /></span>
+    <span className="login-mark" aria-hidden><Mark size={76} /></span>
     <h1><Wordmark className="login-wordmark" /></h1>
     <p>{t('资管宝')}</p>
   </div>

@@ -1,0 +1,497 @@
+/* 苹果液态玻璃主题，数值照搬 design-preview/apple-overview.html。放在最后加载。
+   注意：backdrop-filter 必须写字面值，不能用 var()——构建工具遇到 var() 会只留下 -webkit- 版本，Chrome 里就没有模糊了。 */
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  --bg-deep: rgba(255,255,255,.08); --bg: #05070d;
+  --surface-1: rgba(255,255,255,.06); --surface-2: rgba(255,255,255,.09); --surface-3: rgba(255,255,255,.13);
+  --fill-1: rgba(255,255,255,.04); --fill-2: rgba(255,255,255,.07); --fill-3: rgba(255,255,255,.12); --fill-4: rgba(255,255,255,.18);
+  --line: rgba(255,255,255,.1); --line-solid: rgba(255,255,255,.12);
+  --text-1: #f5f5f7; --text-2: #d8dae0; --text-3: #a0a4b0; --text-4: #8a8f9c; --dim: #6b707c;
+  --mint: #9fffd2; --on-mint: #062014;
+  --mint-a1: #9fffd207; --mint-a2: #9fffd211; --mint-a3: #9fffd222; --mint-a4: #9fffd24a; --mint-a5: #9fffd280;
+  --down: #d29b98; --down-a1: #d29b980a; --down-a2: #d29b9826;
+  --debt: #ff9f8a; --debt-a: #ff9f8a30;
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 28px;
+  --glass: rgba(12,16,24,.46); --glass-strong: rgba(30,36,48,.52); /* 深色底：压住星球亮边，文字才清楚 */
+  --edge: inset 0 .5px 0 rgba(255,255,255,.22), inset 0 0 0 .5px rgba(255,255,255,.06);
+  --shadow: 0 14px 40px rgba(0,0,0,.4);
+  --rim: linear-gradient(140deg, rgba(255,255,255,.4), rgba(255,255,255,.06) 30%, rgba(255,255,255,.06) 70%, rgba(255,255,255,.4));
+  --summary-card-background: var(--glass); --summary-card-border: transparent;
+}
+:root { background: #05070d; }
+body { background: transparent; }
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: url('/login-bg.webp') center / cover no-repeat, #05070d; }
+body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .18; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.workspace { background: none; }
+.numeric, .hero-value, .summary-value { font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+
+/* 卡片：毛玻璃 + 渐变描边 */
+.panel, .hero-panel, .summary-card, .account-page-source-card, .account-page-binance-groups button,
+.returns-filter-panel, .returns-view-switch, .returns-hero, .returns-stat, .returns-summary-card, .returns-category-card,
+.account-page-detail .equity-breakdown {
+  border: 0; border-radius: var(--radius-lg); background: var(--glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: var(--shadow); overflow: hidden; position: relative;
+}
+.panel::after, .hero-panel::after, .summary-card::after, .account-page-source-card::after, .returns-filter-panel::after,
+.returns-hero::after, .returns-stat::after, .returns-summary-card::after, .returns-category-card::after {
+  content: ""; position: absolute; inset: 0; z-index: 0; opacity: 1; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: var(--rim);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.account-page-binance-groups button.active { background: var(--glass-strong); border: 0; }
+.returns-summary-card, .returns-category-card, .account-page-source-card, .returns-stat, .account-page-binance-groups button { border-radius: 20px; }
+
+/* 总览大卡 */
+.hero-body { padding: 32px; gap: 32px; }
+.hero-value, .summary-value, .returns-stat .numeric { text-shadow: 0 1px 14px rgba(0,0,0,.35); }
+.hero-value { font-size: clamp(38px, 5vw, 56px); font-weight: 700; line-height: 1.05; margin: 6px 0 14px; }
+.hero-value small { font-size: .5em; font-weight: 600; color: var(--dim); margin-right: 2px; }
+.hero-value small:last-child { margin: 0 0 0 1px; }
+.hero-toolbar { border-top: 1px solid var(--line); background: none; padding: 10px 24px 10px 32px; }
+
+/* 六个小卡：苹果式彩色图标方块 */
+.summary-card { padding: 20px 22px; }
+.summary-caption { gap: 10px; font-size: 15px; font-weight: 500; color: var(--text-3); }
+.summary-icon { width: 28px; height: 28px; border-radius: 8px; background: currentColor; }
+.summary-icon > svg { color: #fff; width: 16px; height: 16px; stroke-width: 2; }
+.summary-contract-icon { color: #30d158; }
+.summary-liability-icon { color: #8e8e93; }
+.summary-value { font-size: 26px; font-weight: 700; margin-top: 8px; }
+.summary-bottom > span { font-size: 13px; color: var(--dim); }
+.panel-heading { padding: 24px 24px 0; }
+.panel-heading h2 { font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
+
+/* 侧边栏：悬浮玻璃 */
+.sidebar {
+  inset: 14px auto 14px 14px; width: 208px; border: 0; border-radius: 30px; background: var(--glass);
+  backdrop-filter: blur(22px) saturate(150%);
+  box-shadow: var(--edge), var(--shadow);
+}
+.nav-item { border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--text-3); }
+.nav-item:hover { background: var(--fill-3); }
+.nav-item.active, .nav-item.active > svg { color: var(--text-1); }
+.nav-item.active { background: var(--fill-3); border-color: transparent; }
+
+/* 顶栏：药丸形玻璃，左边页面标题，右边头像（标题挪进顶栏后，正文里的大标题只留给读屏软件） */
+.topbar {
+  height: 60px; margin: 14px 36px 0; padding: 0 10px 0 24px; border: 0; border-radius: 999px; background: var(--glass-strong);
+  backdrop-filter: blur(22px) saturate(150%);
+  box-shadow: var(--edge), var(--shadow);
+}
+@media (min-width: 768px) {
+  .topbar { justify-content: space-between; padding-top: 0; backdrop-filter: blur(22px) saturate(150%); background: var(--glass-strong); }
+  .topbar .topbar-leading { display: flex; }
+  .breadcrumb-root, .breadcrumb > svg { display: none; }
+  .breadcrumb strong { font-size: 22px; font-weight: 700; letter-spacing: -.02em; color: var(--text-1); }
+  .main-content { padding-top: 20px; }
+  .page-heading:not(:has(.page-heading-actions)) { margin-bottom: 0; }
+  .page-heading h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .profile-name { display: none; }
+  .profile-trigger .personal-avatar { width: 38px; height: 38px; }
+  .profile-caret { top: 26px; }
+}
+
+/* 控件：苹果分段控件（选中项白底黑字）、药丸按钮 */
+.currency-switch, .profile-lang { border: 0; border-radius: 999px; padding: 3px; background: var(--fill-3); box-shadow: inset 0 1px 2px rgba(0,0,0,.08); }
+.currency-switch button, .profile-lang button { border-radius: 999px; padding: 5px 14px; font-size: 13px; font-weight: 600; color: var(--text-3); }
+.currency-switch button.active, .profile-lang button.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 3px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.08); }
+.return-range-trigger { border: 0; border-radius: 999px; background: var(--fill-3); padding: 5px 14px; font-weight: 600; }
+.return-range-trigger:hover, .return-range-trigger[data-state="open"] { background: var(--fill-4); border: 0; }
+.button-secondary { border: 0; border-radius: 999px; background: var(--fill-3); box-shadow: var(--edge); }
+.button-primary { border-radius: 999px; }
+
+/* 输入框、下拉框：半透明，无硬边框 */
+.app-select, .search-field, .select-trigger { border: 0; border-radius: 12px; background: var(--fill-3); box-shadow: inset 0 .5px 0 rgba(255,255,255,.2); }
+.filter-bar .return-range-trigger { border-radius: 12px; }
+
+/* 弹窗、下拉菜单、头像菜单：更厚的玻璃 */
+.dialog-content, .select-menu, .profile-popover, .source-picker-dialog {
+  border: 0; border-radius: 24px; background: rgba(30,32,40,.6);
+  backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: var(--edge), 0 24px 70px rgba(0,0,0,.55);
+}
+.dialog-overlay { background: rgba(0,0,0,.35); backdrop-filter: blur(6px); }
+
+/* 动效：入场与数字滚动在 motion-effects.ts；这里是悬停和按下。
+   用 translate/scale 单独属性而不是 transform：motion 的入场动画和 motion.button 会在 transform 上写内联样式，会盖掉悬停效果。 */
+:root { --spring: cubic-bezier(.34, 1.56, .64, 1); --ease: cubic-bezier(.2, .8, .2, 1); }
+
+/* 卡片：小卡上浮放大，大卡轻抬；描边和阴影一起变亮 */
+.panel, .hero-panel, .summary-card, .account-page-source-card, .account-page-binance-groups button, .returns-stat, .returns-summary-card, .returns-category-card {
+  transition: translate .35s var(--ease), scale .35s var(--ease), background-color .3s ease, box-shadow .35s ease;
+}
+.summary-card:hover, .account-page-source-card:hover, .account-page-binance-groups button:hover, .returns-stat:hover, .returns-summary-card:hover, .returns-category-card:hover {
+  translate: 0 -4px; scale: 1.015; background: var(--glass-strong);
+  box-shadow: 0 0 0 .5px rgba(255,255,255,.14), 0 22px 50px rgba(0,0,0,.5);
+}
+.panel:hover, .hero-panel:hover { translate: 0 -2px; box-shadow: 0 0 0 .5px rgba(255,255,255,.1), 0 20px 50px rgba(0,0,0,.48); }
+.summary-card:active, .account-page-source-card:active, .account-page-binance-groups button:active, .returns-summary-card:active, .returns-category-card:active { scale: .985; transition-duration: .12s; }
+
+/* 按钮：悬停变亮微抬，按下回弹缩小 */
+.button, .icon-button, .currency-switch button, .profile-lang button, .return-range-trigger, .returns-view-switch button, .app-select, .select-trigger, .text-action, .hero-account-count, .profile-trigger {
+  transition: translate .3s var(--spring), scale .3s var(--spring), background-color .2s ease, color .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+.button:hover:not(:disabled), .return-range-trigger:hover, .app-select:hover, .select-trigger:hover { translate: 0 -1px; filter: brightness(1.15); }
+.icon-button:hover:not(:disabled) { scale: 1.1; background: var(--fill-3); }
+.icon-button:hover:not(:disabled) svg.lucide-refresh-cw { rotate: 90deg; }
+.icon-button svg { transition: rotate .45s var(--spring); }
+.currency-switch button:not(.active):hover, .profile-lang button:not(.active):hover, .returns-view-switch button:hover { color: var(--text-1); background: var(--fill-2); }
+.text-action:hover, .hero-account-count:hover { translate: 2px 0; color: var(--text-1); }
+.profile-trigger:hover { scale: 1.06; }
+.button:active:not(:disabled), .icon-button:active:not(:disabled), .currency-switch button:active, .profile-lang button:active, .return-range-trigger:active, .returns-view-switch button:active, .app-select:active, .select-trigger:active, .profile-trigger:active { scale: .95; transition-duration: .1s; }
+
+/* 列表行、导航：悬停出现圆角高亮，图标往右轻推 */
+.ranking-row, .allocation-legend button, .profile-item, .nav-item { transition: background-color .2s ease, color .2s ease, padding .3s var(--ease); }
+.nav-item > svg, .profile-item svg, .allocation-legend button > svg { transition: translate .3s var(--spring); }
+.nav-item:hover > svg, .profile-item:hover svg { translate: 2px 0; }
+.ranking-row { border-radius: 14px; }
+.ranking-row:hover { background: var(--fill-2); padding-left: 8px; padding-right: 8px; }
+.ranking-row:hover .ranking-label strong { color: var(--text-1); }
+.allocation-legend button:hover { background: var(--fill-2); }
+.allocation-legend button:hover > svg { translate: 3px 0; }
+.profile-item { border-radius: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel, .hero-panel, .summary-card, .account-page-source-card, .returns-stat, .returns-summary-card, .returns-category-card, .button, .icon-button, .ranking-row, .nav-item, .returns-calendar-day { transition: none !important; }
+  *:hover, *:active, *:hover > svg, *:hover svg { translate: none !important; scale: none !important; rotate: none !important; }
+}
+
+@media (max-width: 767px) {
+  .sidebar { inset: 0 auto 0 0; width: 208px; border-radius: 0 30px 30px 0; }
+  .topbar { height: 52px; margin: 10px 12px 16px; padding: 0 10px 0 14px; }
+  .hero-body { padding: 22px; }
+  .hero-value { font-size: 40px; }
+  .summary-value { font-size: 20px; }
+}
+
+/* 每日盈亏日历：圆角玻璃方块，盈亏只用淡淡的色调 */
+.returns-calendar-days, .returns-calendar-weekdays { gap: 8px; }
+.returns-calendar-day { border: 0; border-radius: 14px; background: rgba(255,255,255,.07); box-shadow: inset 0 .5px 0 rgba(255,255,255,.15); color: var(--text-2); transition: translate .3s var(--spring), scale .3s var(--spring), background-color .2s ease; }
+.returns-calendar-day.positive { background: linear-gradient(160deg, rgba(159,255,210,.24), rgba(159,255,210,.07)); color: var(--mint); }
+.returns-calendar-day.negative { background: linear-gradient(160deg, rgba(210,155,152,.24), rgba(210,155,152,.07)); color: var(--down); }
+.returns-calendar-day:not(:disabled):hover { translate: 0 -2px; scale: 1.06; border: 0; background-color: rgba(255,255,255,.14); }
+.returns-calendar-day.is-selected { box-shadow: inset 0 0 0 1.5px var(--mint); }
+
+/* ===== 字体：全站用系统字体（苹果上是 SF Pro），层级靠字重和字距拉开 ===== */
+:root { --fs-xs: 13px; --fs-sm: 14px; --fs-md: 15px; --fs-lg: 17px; }
+.numeric, .allocation-center strong { font-family: inherit; }
+.nav-item, .badge, .demo-badge, .eyebrow, .button, .trend, .direction-badge { letter-spacing: .01em; }
+.eyebrow { letter-spacing: .01em; }
+h1, h2, h3, .panel-heading h2 { font-weight: 600; letter-spacing: -.02em; }
+.chart-summary > strong, .holdings-balance > strong { font-weight: 600; }
+
+/* ===== LOGO ===== */
+.wordmark { display: inline-flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -.035em; line-height: 1; white-space: nowrap; }
+.sidebar-wordmark { font-size: 21px; width: auto; }
+.login-wordmark { font-size: 40px; width: auto; }
+.login-mark { width: auto; height: auto; border: 0; background: none; box-shadow: none; border-radius: 0; margin-bottom: 18px; }
+.login-brand p { letter-spacing: .02em; text-indent: 0; font-size: var(--fs-sm); color: var(--text-2); }
+
+/* ===== 标签：全圆角胶囊，无边框，淡色填充 ===== */
+.badge, .demo-badge, .direction-badge { border: 0; border-radius: 999px; padding: 3px 10px; line-height: 1.4; font-weight: 500; }
+.badge.subtle { color: var(--text-2); background: var(--fill-3); }
+.demo-badge { background: rgba(217,191,128,.18); }
+.direction-badge.is-long { background: rgba(159,255,210,.16); }
+.direction-badge.is-short { background: rgba(210,155,152,.18); }
+.trend { padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+.trend.positive { color: var(--mint); background: rgba(159,255,210,.14); }
+.trend.negative { color: var(--down); background: rgba(210,155,152,.16); }
+.status-dot { width: 8px; height: 8px; box-shadow: 0 0 0 3px var(--warn-a2), 0 0 10px var(--warn); }
+
+/* ===== 提示 / 提醒：玻璃，紧凑行高 ===== */
+.issue-tooltip {
+  border: 0; border-radius: 16px; padding: 10px 14px; background: rgba(30,32,40,.6); line-height: 1.5; font-size: var(--fs-sm); color: var(--text-1);
+  backdrop-filter: blur(30px) saturate(180%); box-shadow: var(--edge), 0 16px 48px rgba(0,0,0,.5);
+}
+.issue-hint svg { fill: currentColor; }
+.issue-hint svg line { stroke: #1a1405; }
+.toast {
+  left: 50%; right: auto; top: 18px; bottom: auto; translate: -50% 0; width: auto; max-width: min(430px, calc(100vw - 32px)); padding: 12px 20px; border: 0; border-radius: 999px;
+  background: var(--glass-strong); backdrop-filter: blur(30px) saturate(180%); box-shadow: var(--edge), 0 16px 48px rgba(0,0,0,.5); line-height: 1.4; color: var(--text-1);
+}
+.workspace-warning, .market-page-note { line-height: 1.5; font-size: var(--fs-sm); }
+.workspace-warning { border: 0; border-radius: 16px; background: rgba(217,191,128,.14); padding: 12px 18px; }
+
+/* ===== 图标：线宽统一；币种/交易所图标统一底板 ===== */
+svg.lucide { stroke-width: 1.75; }
+.asset-avatar { background: linear-gradient(160deg, rgba(255,255,255,.2), rgba(255,255,255,.07)); box-shadow: inset 0 0 0 .5px rgba(255,255,255,.28), 0 1px 4px rgba(0,0,0,.3); }
+.platform-row .asset-avatar, .detail-location .asset-avatar, .all-accounts .asset-avatar { border-radius: 22%; }
+.platform-row .asset-avatar img, .detail-location .asset-avatar img, .all-accounts .asset-avatar img { border-radius: 18%; }
+
+/* ===== 排版：8px 栅格；卡片内边距 24、卡间距 16、控件高 40；字号三档（主 15/600、次 13–14、说明 13 灰） ===== */
+:root { --control-h: 40px; --pad: 24px; --gap: 16px; }
+.main-content { max-width: 1360px; padding-top: 20px; }
+.topbar { margin-inline: max(36px, calc((100% - 1288px) / 2)); }
+.chart-grid, .secondary-grid { gap: var(--gap); margin-bottom: var(--gap); }
+.panel-heading { padding: var(--pad) var(--pad) 0; }
+.panel-heading p { margin-top: 4px; font-size: var(--fs-xs); }
+.holdings-panel .panel-heading { padding-bottom: var(--gap); }
+.summary-card { padding: 22px var(--pad); }
+.summary-value { margin-top: 12px; }
+
+/* 筛选栏：一行等高控件，标签只留给读屏软件，类别用分段控件 */
+.holdings-filter-bar { align-items: center; gap: 12px; padding: 20px var(--pad); }
+.holdings-filter-bar .filter-field { gap: 0; min-width: 160px; }
+.holdings-filter-bar .filter-field.wide { flex: 3 1 260px; }
+.holdings-filter-bar .filter-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.holdings-filter-bar .app-select, .holdings-filter-bar .select-trigger, .holdings-filter-bar .search-field { height: var(--control-h); }
+.category-tabs { gap: 0; padding: 3px; border-radius: 999px; background: var(--fill-3); box-shadow: inset 0 1px 2px rgba(0,0,0,.08); }
+.filter-bar .category-tabs { height: var(--control-h); box-sizing: border-box; }
+.category-tabs > button { height: 100%; padding: 0 16px; border: 0; border-radius: 999px; font-size: var(--fs-sm); font-weight: 600; color: var(--text-3); }
+.category-tabs > button.active { background: #fff; color: #1d1d1f; border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.08); }
+.category-tabs > button:not(.active):hover { color: var(--text-1); }
+.holding-scope-tabs, .holding-group-heading { padding-inline: var(--pad); }
+.holding-scope-tabs > button { font-size: var(--fs-md); font-weight: 600; }
+.holding-group-heading { padding-block: 16px; border-top: 1px solid var(--line); }
+.holding-group-heading h2 { font-size: var(--fs-lg); font-weight: 600; color: var(--text-1); }
+.holding-group-heading h2 > span { font-size: var(--fs-sm); font-weight: 400; }
+
+/* 表格：行高固定 64px，内容垂直居中；无横线，悬停出圆角高亮；数字列右对齐 */
+.holdings-table { border-collapse: separate; border-spacing: 0; font-size: var(--fs-sm); }
+.holdings-table thead { background: none; border: 0; }
+.holdings-table th { padding: 10px 14px; font-size: var(--fs-xs); font-weight: 500; color: var(--text-4); border-bottom: 1px solid var(--line); vertical-align: middle; }
+.holdings-table td { height: 64px; padding: 0 14px; border: 0; vertical-align: middle; color: var(--text-2); }
+.holdings-table th:first-child, .holdings-table td:first-child { padding-left: var(--pad); }
+.holdings-table th:last-child, .holdings-table td:last-child { padding-right: 16px; }
+.holdings-table tbody tr:hover { background: none; }
+.holdings-table tbody tr:hover td { background: var(--fill-2); }
+.holdings-table tbody tr:hover td:first-child { border-radius: 16px 0 0 16px; }
+.holdings-table tbody tr:hover td:last-child { border-radius: 0 16px 16px 0; }
+.holdings-table .value-cell { color: var(--text-1); font-size: var(--fs-md); font-weight: 600; }
+.spot-holdings-table th, .spot-holdings-table td { padding-inline: 14px; }
+.spot-holdings-table th:first-child, .spot-holdings-table td:first-child { width: 22%; padding-left: var(--pad); }
+.spot-holdings-table th:last-child, .spot-holdings-table td:last-child { width: 48px; padding-right: 16px; }
+.spot-holdings-table .asset-name-button { width: auto; max-width: 180px; gap: 12px; }
+.spot-holdings-table .asset-name-button strong { font-size: var(--fs-md); font-weight: 600; }
+.spot-holdings-table .asset-avatar { width: 36px; height: 36px; }
+.spot-holdings-table .source-column { text-align: right; }
+.spot-holdings-table .source-label { color: var(--text-3); }
+/* 今日盈亏、成本/盈亏：主值（金额）与涨跌胶囊同一行，右边缘齐 */
+.holding-today, .holding-pnl-line { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: var(--fs-md); font-weight: 600; }
+.holding-pnl-line { gap: 8px; }
+.holding-profit-value { gap: 2px; align-items: flex-end; }
+.holding-profit-value > small { font-size: var(--fs-xs); color: var(--text-4); line-height: 1.3; }
+.trend { font-size: var(--fs-xs); font-weight: 600; line-height: 1.4; }
+/* 占比：数字在上，进度条宽度与数字右边缘对齐 */
+.table-allocation { width: 64px; display: grid; gap: 6px; justify-items: stretch; }
+.table-allocation > .numeric { text-align: right; font-size: var(--fs-sm); color: var(--text-2); }
+.tiny-track { height: 4px; margin: 0; border-radius: 999px; background: var(--fill-3); }
+.tiny-track > span { border-radius: 999px; }
+.spot-holdings-table th, .spot-holdings-table td { padding-inline: 12px; }
+.spot-holdings-table th:first-child, .spot-holdings-table td:first-child { padding-left: var(--pad); }
+.spot-holdings-table th:last-child, .spot-holdings-table td:last-child { padding-right: 16px; }
+.spot-holdings-table .source-label { display: inline-block; max-width: 132px; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+.holdings-table .trend svg { display: none; }
+.holding-today > small { display: none; }
+
+/* 交易记录：汇总条与记录卡同一套留白 */
+.records-panel-body { padding: 0 var(--pad) var(--pad); }
+.records-panel-body > .filter-bar { margin: var(--gap) 0; }
+.transaction-summary { margin: 0 0 var(--gap); }
+.transaction-summary-grid { border: 0; border-radius: 20px; background: var(--fill-1); box-shadow: var(--edge); }
+.transaction-summary-card { padding: 16px 20px; border-right: 1px solid var(--line); }
+.transaction-summary-card h3 { margin: 0 0 8px; font-size: var(--fs-xs); font-weight: 500; color: var(--text-3); }
+.transaction-summary-amount strong { font-size: var(--fs-xl); font-weight: 600; letter-spacing: -.02em; }
+.transaction-day-title { margin: 24px 0 12px; font-size: var(--fs-sm); font-weight: 600; }
+.contract-round { gap: 8px; padding: 16px 20px; border: 0; border-radius: 20px; background: var(--fill-2); box-shadow: var(--edge); transition: background-color .2s ease, translate .3s var(--ease); }
+.contract-round:hover { background: var(--fill-3); translate: 0 -1px; }
+.record-card-amount { font-size: var(--fs-lg); font-weight: 600; }
+.record-card-bottom { font-size: var(--fs-xs); }
+.record-card-status { border: 0; border-radius: 999px; padding: 2px 10px; background: rgba(217,191,128,.16); }
+.contract-direction, .contract-market { border: 0; border-radius: 999px; padding: 2px 10px; font-size: var(--fs-xs); font-weight: 500; line-height: 1.4; }
+.contract-direction.positive { color: var(--mint); background: rgba(159,255,210,.16); }
+.contract-direction.negative { color: var(--down); background: rgba(210,155,152,.18); }
+.contract-market { color: var(--text-2); background: var(--fill-3); }
+
+/* 账户卡：同样的 24 内边距，地址单行省略，金额放大，按钮等高 */
+.account-page-source-card { padding: var(--pad); }
+.account-page-identity-line { align-items: center; }
+.account-page-identity-line > :first-child { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow-wrap: normal; font-size: var(--fs-xs); color: var(--text-4); }
+.account-page-source-value { margin: 20px 0 16px; align-items: flex-end; }
+.account-page-source-value strong { font-size: 26px; font-weight: 700; letter-spacing: -.02em; margin-top: 6px; }
+.account-page-card-updated { font-size: var(--fs-xs); line-height: 1.4; margin: 0 0 16px; }
+.account-page-card-actions { gap: 8px; }
+.account-page-card-actions .button { min-height: 34px; padding: 0 14px; font-size: var(--fs-sm); }
+@media (max-width: 640px) { .holdings-filter-bar { padding: 16px; } .holdings-filter-bar .filter-field { flex: 1 1 100%; } .holdings-panel .holding-group-heading, .holding-scope-tabs { padding-inline: 16px; } }
+
+/* ===== 筛选栏：胶囊搜索框、胶囊下拉、滑块分段控件；清除按钮固定占位，宽度不再随选择跳动 ===== */
+.filter-bar { gap: 12px; }
+.filter-label { font-size: var(--fs-xs); font-weight: 500; color: var(--text-3); padding-left: 4px; }
+.filter-bar .filter-field { flex: 1 1 0; min-width: 160px; }
+.filter-bar .filter-field.wide { flex: 3 1 0; min-width: 220px; }
+.filter-bar .filter-field.fit { flex: 0 0 auto; min-width: 0; }
+.holdings-filter-bar .filter-field:not(.wide):not(.fit) { flex: 0 0 220px; }
+.filter-bar .search-field, .filter-bar .app-select, .filter-bar .return-range-trigger {
+  height: var(--control-h); min-height: var(--control-h); padding-inline: 16px; border: 0; border-radius: 999px; background: var(--fill-3);
+  box-shadow: inset 0 .5px 0 rgba(255,255,255,.18); font-size: var(--fs-sm); font-weight: 500; color: var(--text-1);
+  transition: background-color .2s ease, box-shadow .25s ease, filter .2s ease;
+}
+.filter-bar .app-select:hover, .filter-bar .return-range-trigger:hover, .filter-bar .search-field:hover { background: var(--fill-4); filter: none; translate: none; }
+.filter-bar .search-field { gap: 10px; color: var(--text-3); }
+.filter-bar .search-field:focus-within { background: var(--fill-4); }
+.filter-bar .search-field input { font-size: var(--fs-sm); font-weight: 500; color: var(--text-1); }
+.filter-bar .search-field input::placeholder { color: var(--text-3); font-weight: 400; }
+.filter-bar .search-field > svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.filter-bar .search-field button { width: 20px; height: 20px; align-items: center; justify-content: center; border-radius: 50%; background: var(--fill-4); color: var(--text-2); }
+.filter-bar .app-select > span:not(.select-icon) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.filter-bar .app-select > svg:last-child, .filter-bar .return-range-trigger > svg:last-child { color: var(--text-3); }
+/* 分段控件：白色滑块在选项间滑动 */
+.category-tabs { position: relative; display: inline-flex; flex: 0 0 auto; }
+.category-tabs > button { position: relative; z-index: 1; padding: 0 18px; background: none; transition: color .25s ease; }
+.category-tabs > button.active { background: none; box-shadow: none; color: #1d1d1f; }
+.segmented-thumb { position: absolute; top: 3px; bottom: 3px; z-index: 0; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.18), 0 4px 12px rgba(0,0,0,.1); transition: left .4s var(--spring), width .4s var(--spring); }
+/* 清除筛选：固定的圆形按钮，没有筛选时变灰 */
+.filter-bar .filter-clear { flex: 0 0 var(--control-h); width: var(--control-h); height: var(--control-h); min-height: var(--control-h); padding: 0; justify-content: center; border: 0; border-radius: 50%; background: var(--fill-3); color: var(--text-2); transition: opacity .25s ease, background-color .2s ease, rotate .45s var(--spring); }
+.filter-bar .filter-clear:disabled { opacity: .32; pointer-events: none; background: var(--fill-2); }
+.filter-bar .filter-clear:not(:disabled) { background: var(--fill-4); color: var(--text-1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.28); }
+.filter-bar .filter-clear:hover:not(:disabled) { background: rgba(255,255,255,.26); rotate: -180deg; }
+@media (max-width: 640px) {
+  .filter-bar .filter-field.wide, .filter-bar .filter-field.fit { flex: 1 1 100%; }
+  .filter-bar .filter-field { flex: 1 1 calc(50% - 6px); }
+  .holdings-filter-bar .filter-field:not(.wide):not(.fit) { flex: 1 1 0; min-width: 0; }
+  .filter-bar .filter-clear { flex: 0 0 var(--control-h); width: var(--control-h); }
+  .category-tabs { display: flex; width: 100%; }
+  .category-tabs > button { flex: 1; padding: 0 8px; }
+}
+
+/* ===== 选择菜单（下拉、账户筛选）：苹果式玻璃面板。去掉绿色描边：选中只用淡底 + 勾，焦点只亮一点底色 ===== */
+@keyframes menu-in { from { opacity: 0; scale: .96; translate: 0 -6px; } }
+.select-menu { padding: 8px; border-radius: 24px; animation: menu-in .22s var(--ease); }
+.select-heading { padding: 6px 6px 10px 12px; }
+.select-heading h2 { font-size: var(--fs-md); font-weight: 600; color: var(--text-1); letter-spacing: -.01em; }
+.select-heading button { width: 28px; height: 28px; align-items: center; justify-content: center; padding: 0; border-radius: 50%; background: var(--fill-3); color: var(--text-2); transition: background-color .2s ease, scale .25s var(--spring); }
+.select-heading button:hover { background: var(--fill-4); scale: 1.08; }
+.select-heading button svg { width: 14px; height: 14px; }
+.select-search { height: 36px; margin: 0 4px 8px; padding: 0 12px; gap: 8px; border: 0; border-radius: 999px; background: var(--fill-3); box-shadow: inset 0 .5px 0 rgba(255,255,255,.16); transition: background-color .2s ease; }
+.select-search svg { width: 16px; height: 16px; }
+.select-search input { font-size: var(--fs-sm); color: var(--text-1); }
+.select-search input::placeholder { color: var(--text-3); }
+.select-search:focus-within { border: 0; outline: none; background: var(--fill-4); }
+.select-options { padding: 0 0 4px; }
+.select-group { padding: 12px 12px 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--text-4); }
+.select-option { min-height: 48px; padding: 8px 12px; gap: 12px; border: 0; border-radius: 14px; color: var(--text-1); font-size: var(--fs-md); font-weight: 500; transition: background-color .15s ease; }
+.select-option:hover { background: var(--fill-2); }
+.select-option[aria-selected=true] { background: var(--fill-2); border: 0; }
+.select-option:focus-visible { background: var(--fill-3); outline: none; }
+.select-option:active { background: var(--fill-3); }
+.select-menu button:focus-visible { outline: none; }
+.select-heading button:focus-visible { background: var(--fill-4); }
+.select-check { width: 18px; height: 18px; color: var(--mint); }
+.select-option-label small { font-size: var(--fs-xs); color: var(--text-4); }
+.select-icon, .select-currency-icon { width: 28px; height: 28px; }
+.select-icon:not(:has(.asset-avatar)) { border-radius: 50%; background: var(--fill-3); color: var(--text-2); }
+.select-icon:not(:has(.asset-avatar)) svg { width: 16px; height: 16px; }
+.select-empty { font-size: var(--fs-sm); }
+
+/* 日期范围弹窗：同一块玻璃；预设用胶囊，选中是白底；日历选中是白色圆点，范围是淡底 */
+.source-picker-dialog.return-range-picker { padding: 14px; border: 0; border-radius: 24px; background: rgba(30,32,40,.6); animation: menu-in .22s var(--ease); }
+.return-range-presets { gap: 6px; }
+.return-range-option { min-height: 34px; border: 0; border-radius: 999px; background: var(--fill-2); color: var(--text-2); font-size: var(--fs-sm); font-weight: 500; transition: background-color .2s ease, color .2s ease; }
+.return-range-option:hover { background: var(--fill-3); color: var(--text-1); }
+.return-range-option[aria-pressed="true"] { background: #fff; color: #1d1d1f; font-weight: 600; border: 0; }
+.return-range-custom { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 14px; }
+.return-range-selection { font-size: var(--fs-sm); }
+.return-range-selection > span:not(.range-separator) { min-height: 36px; display: flex; align-items: center; justify-content: center; padding: 0 12px; border: 0; border-radius: 12px; background: var(--fill-2); color: var(--text-1); font-weight: 500; }
+.calendar-heading button { min-height: 32px; border-radius: 10px; font-size: var(--fs-sm); font-weight: 600; color: var(--text-1); }
+.calendar-heading button:hover:not(:disabled), .calendar-choices button:hover:not(:disabled) { background: var(--fill-3); color: var(--text-1); }
+.calendar-weekdays > span { font-size: var(--fs-xs); font-weight: 500; }
+.calendar-day { height: 34px; border: 0; border-radius: 50%; font-size: var(--fs-sm); }
+.calendar-day:hover:not(:disabled) { background: var(--fill-3); color: var(--text-1); }
+.calendar-day.in-range { border-radius: 0; background: var(--fill-2); color: var(--text-1); }
+.calendar-day.endpoint, .calendar-day.endpoint:hover:not(:disabled) { border-radius: 50%; background: #fff; color: #1d1d1f; }
+.calendar-day.today:not(.endpoint) { border: 0; color: var(--mint); font-weight: 600; }
+.calendar-choices button { min-height: 40px; border: 0; border-radius: 12px; font-size: var(--fs-sm); }
+.calendar-choices button[aria-pressed="true"] { background: #fff; color: #1d1d1f; border: 0; font-weight: 600; }
+.range-calendar button:focus-visible, .return-range-option:focus-visible { outline: none; background: var(--fill-3); }
+.return-range-actions .button { min-height: 34px; padding: 0 16px; font-size: var(--fs-sm); }
+
+/* ===== 强调色：薄荷绿只留给涨跌、做多、收益；按钮、选中、悬停、焦点统一用白和灰 ===== */
+.button-primary { background: #fff; color: #1d1d1f; border-color: transparent; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.2), 0 6px 16px rgba(0,0,0,.18); }
+.button-primary:hover:not(:disabled) { filter: brightness(.93); }
+.button-primary:disabled { opacity: .4; }
+::selection { color: #fff; background: rgba(255,255,255,.28); }
+:focus-visible, :focus-within { outline-color: rgba(255,255,255,.6) !important; }
+input[type=checkbox], input[type=radio] { accent-color: #fff; }
+.skip-link { background: #fff; color: #1d1d1f; }
+/* 悬停变色：白色 */
+.text-action:hover, .hero-account-count:hover, .account-page-copy:hover, .all-accounts button:hover, .card-notes > summary:hover, .contract-round:hover .record-card-link,
+.asset-name-button:hover strong, .platform-row:hover .platform-label strong, .ranking-row:hover .ranking-label strong, .contract-card-row:hover .contract-row-name > strong { color: var(--text-1); }
+.transactions-details a, .workspace-warning button { color: var(--text-1); text-decoration: underline; text-underline-offset: 3px; }
+/* 导航、标签页、开关 */
+.asset-subnav { border-left-color: var(--line); }
+.asset-subnav > button:hover, .asset-subnav > button.active { color: var(--text-1); background: var(--fill-2); }
+.asset-subnav > button.active .subnav-dot, .nav-marker { background: #fff; }
+.holding-scope-tabs > button.active, .segmented button.active { color: var(--text-1); border-bottom-color: #fff; }
+.asset-manager-tabs > button.active, .connection-kind-switch button.active { background: #fff; color: #1d1d1f; border-color: transparent; font-weight: 600; }
+.profile-switch.on { background: rgba(255,255,255,.92); }
+.select-check { color: var(--text-1); }
+/* 登录页 */
+.login-card::before { background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); }
+.login-field input:not(.login-code input):focus, .login-code:focus-within .login-cell.active { border-color: rgba(255,255,255,.5); box-shadow: 0 0 0 3px rgba(255,255,255,.12); }
+.login-cell.filled { border-color: var(--line-solid); }
+.login-code:focus-within .login-cell.active:empty::after { background: #fff; }
+/* 头像、卡片、杂项的绿色描边和绿底 */
+.personal-avatar, .profile-trigger:hover .personal-avatar, .profile-trigger[aria-expanded="true"] .personal-avatar, .personal-avatar:hover { border-color: var(--line-solid); }
+.cost-entry-form, .detail-description { border: 0; background: var(--fill-2); }
+.planned-icon, .returns-calendar-nav button, .returns-metric-primary { border-color: var(--line-solid); }
+.returns-rank-kind { background: var(--fill-3); }
+.asset-manager-file:hover, .connection-icon-button:hover { background: var(--fill-2); }
+.asset-manager-search:focus-within { border-color: var(--line-solid); }
+.returns-calendar-day.is-selected { border-color: transparent; box-shadow: inset 0 0 0 1.5px #fff; }
+.returns-calendar-day > .is-today { background: var(--fill-4); }
+.calendar-day.today:not(.endpoint) { color: var(--text-1); font-weight: 700; background: var(--fill-2); }
+/* 占比条是分布，不是涨跌：白色 */
+.tiny-track > span { background: rgba(255,255,255,.6); }
+.platform-track > span { background: #fff; opacity: .55; }
+
+/* 排行榜底部的“展开全部”：别拉成整行，居中、按文字宽度 */
+.returns-rank-list > .button { justify-self: center; width: auto; min-width: 168px; padding-inline: 24px; margin-top: 12px; }
+
+/* 头像：不显示名字和小箭头（名字在点开的菜单里）；菜单在顶栏里，顶栏已有毛玻璃，嵌套后不再模糊，所以背景要几乎不透明才看得清字 */
+.profile-name, .profile-caret { display: none; }
+.profile-popover { background: rgba(28,30,38,.97); }
+
+/* 电脑宽屏：本期收益组成 和 交易盈亏排行 并排成两张卡 */
+@media (min-width: 1280px) {
+  .records-page .returns-analysis-grid.returns-analysis-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); align-items: stretch; }
+  /* 左卡决定行高；右卡贴合它，列表多了在卡里滚动，不撑高左卡 */
+  .records-page .returns-analysis-stack > .returns-ranking-anchor { position: relative; }
+  .records-page .returns-analysis-stack > .returns-ranking-anchor > .panel { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .records-page .returns-analysis-stack > .returns-ranking-anchor > .panel > .records-panel-body { flex: 1; min-height: 0; overflow-y: auto; }
+  .records-page .returns-analysis-stack > .returns-ranking-anchor .returns-rank-wide .returns-rank-item { padding: 3px 0; }
+  .records-page .returns-analysis-stack > .returns-ranking-anchor .returns-rank-list > .button { margin-top: 8px; }
+}
+
+/* 今日盈亏 / 成本盈亏：金额一行、涨跌胶囊（和均价）一行，右边缘齐，不再因胶囊宽度不同而左右跳 */
+.holding-today, .holding-pnl-line { flex-direction: column; align-items: flex-end; gap: 4px; }
+.holding-profit-value { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.holding-profit-value > .holding-sub { display: flex; align-items: center; justify-content: flex-end; gap: 8px; white-space: nowrap; font-size: var(--fs-xs); color: var(--text-4); line-height: 1.4; }
+.holding-today > .trend, .holding-sub > .trend { font-size: 12px; }
+.holding-today, .holding-profit-value { white-space: nowrap; }
+
+/* 资产表重排：7 列，每行两层——主值在上、辅助信息在下；数字列整列居中（与项目其他排版一致），列宽均分 */
+.spot-holdings-table { table-layout: fixed; width: 100%; }
+.spot-holdings-table th, .spot-holdings-table td { padding-inline: 8px; text-align: center; white-space: nowrap; }
+.spot-holdings-table th:first-child, .spot-holdings-table td:first-child { text-align: left; width: 24%; padding-left: var(--pad); }
+.spot-holdings-table th:last-child, .spot-holdings-table td:last-child { width: 56px; padding-right: 16px; text-align: right; }
+.spot-holdings-table .asset-name-button { max-width: 100%; }
+.spot-holdings-table .asset-name-button strong { font-size: var(--fs-md); }
+.spot-holdings-table .asset-name-button small { margin-top: 3px; color: var(--text-4); }
+.holding-stack { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; font-size: var(--fs-md); font-weight: 600; color: var(--text-2); }
+.holding-stack > small { font-size: var(--fs-xs); font-weight: 400; color: var(--text-4); line-height: 1.4; }
+.holding-stack.holding-value > span { color: var(--text-1); }
+.holding-today { align-items: center; }
+
+/* 单值列：字号略小，整列居中，不再合并两项 */
+.spot-holdings-table td.numeric { font-size: var(--fs-sm); color: var(--text-2); font-weight: 500; }
+.spot-holdings-table td.value-cell { color: var(--text-1); font-weight: 600; }
+.spot-holdings-table th:first-child, .spot-holdings-table td:first-child { width: 19%; }
+
+/* 占比：数字在上、数据条在下，整体居中 */
+.spot-holdings-table .table-allocation { margin-inline: auto; width: 64px; gap: 6px; }
+.spot-holdings-table .table-allocation > .numeric { text-align: center; font-size: var(--fs-sm); font-weight: 500; color: var(--text-2); }
+
+/* 手机端持仓卡：左列一行放不下时胶囊换行，而不是被截断；胶囊也收紧一点 */
+.mobile-holding-left > span:not(.mobile-holding-name) { overflow: visible; flex-wrap: wrap; row-gap: 2px; }
+.mobile-holding-left .trend { padding: 1px 7px; font-size: 12px; line-height: 1.5; white-space: nowrap; flex: 0 0 auto; }

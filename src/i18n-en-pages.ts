@@ -1,6 +1,6 @@
 // 主要页面（总览、持仓、账户、交易记录、收益分析、资产管理）的英文对照。
 export const enPages: Record<string, string> = {
-  '均价': 'Avg. price', '持有数量': 'Quantity held', '价格': 'Price', '持仓估值': 'Position value', '今日盈亏': 'Today\'s P&L', '成本 / 持仓盈亏': 'Cost / P&L', '占比': 'Share',
+  '均价': 'Avg. price', '持有数量': 'Quantity held', '价格': 'Price', '持仓估值': 'Position value', '今日盈亏': 'Today\'s P&L', '成本 / 持仓盈亏': 'Cost / P&L', '占比': 'Share', '持有数量 / 价格': 'Quantity / Price', '成本': 'Cost', '持仓盈亏': 'Position P&L', '持仓估值 / 占比': 'Value / Share',
   '存放位置': 'Held in', '详情': 'Details', '今日': 'Today', '盈亏': 'P&L', '价格走势': 'Price trend', '持仓金额变化': 'Position value change', '2026 年 10 月 17 日': 'Oct 17, 2026',
   '示例日期': 'sample date', '添加账户': 'Add account', '已统计净资产估值': 'Estimated net worth', '净资产走势': 'Net worth trend', '个账户': 'accounts', '合约': 'Futures',
   '浮动盈亏 ·': 'Unrealized P&L ·', '总负债': 'Total liabilities', '每月应还': 'Monthly payment', '全部账户': 'All accounts', '暂无已添加的账户': 'No accounts added yet',

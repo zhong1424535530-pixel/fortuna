@@ -257,6 +257,8 @@ export const enUi: Record<string, string> = {
   "每日记录": "Daily records",
   "累计记录": "Cumulative records",
   "每日已平仓净收益": "Daily net profit from closes",
+  "每周记录": "Weekly records",
+  "每周已平仓净收益": "Weekly net profit from closes",
   "累计已平仓净收益": "Cumulative net profit from closes",
   "· 本期已实现盈亏": "· Realized P&L this period",
   "· 本期资产盈亏": "· Asset P&L this period",

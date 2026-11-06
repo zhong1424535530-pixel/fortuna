@@ -15,8 +15,8 @@ import { buildContractHistory, roundFees } from '../data/contract-history'
 import type { ContractRound } from '../data/contract-history'
 import { calendarToday, returnRangeLabel } from '../data/return-range'
 import type { ReturnRange } from '../data/return-range'
-import { buildReturnEntries, closedFundingBreakdown, closedReturnDays, closedReturnStats, rankShares, returnDays, returnTotal } from '../data/returns-analysis'
-import type { ReturnEntry } from '../data/returns-analysis'
+import { buildReturnEntries, isWeekly, returnDaySlots, closedFundingBreakdown, closedReturnDays, closedReturnStats, rankShares, returnDays, returnTotal } from '../data/returns-analysis'
+import type { ReturnDay, ReturnEntry } from '../data/returns-analysis'
 import { spotGroupDays, tradingRanking, valueRecordedEntries } from '../data/returns-period'
 import type { PeriodTrade, SpotGroup } from '../data/returns-period'
 import { compareReturnAmounts, comparisonCategoryAmounts, comparisonPeriods, periodOverview } from '../data/returns-comparison'
@@ -179,11 +179,18 @@ function PeriodComparison({ current, previous, periods, unit, hidden, days, curv
     {curves && <ReturnsComparisonChart curves={curves} unit={unit} hidden={hidden} />}
   </div>
 }
+// 整体 = 合约盈亏 + 手续费 + 资金费 + 奖励 + 现货/股票/其他资产的收益，按日期相加后重算累计
+function mergeDays(lists: ReturnDay[][]): ReturnDay[] {
+  const days = new Map<string, InstanceType<typeof Money>>()
+  for (const list of lists) for (const day of list) days.set(day.label, (days.get(day.label) ?? new Money(0)).plus(day.amount))
+  let cumulative = new Money(0)
+  return [...days].sort(([a], [b]) => a.localeCompare(b)).map(([label, amount]) => { cumulative = cumulative.plus(amount); return { label, amount: amount.toFixed(), cumulative: cumulative.toFixed() } })
+}
 const sumAmounts = (values: (string | null)[], unit: string) => returnTotal(values.flatMap(amount => amount === null ? [] : [{ asset: unit, amount }]))
 const categoryLabel = (entry: ReturnEntry) => entry.category === '奖励收入' ? ['REFERRAL_KICKBACK', 'COMMISSION_REBATE', 'API_REBATE', 'SPOT_COMMISSION_REBATE', 'SPOT_REFERRAL_KICKBACK'].includes(entry.row.note) ? '返佣 / 返现' : '平台奖励' : entry.category
-type ChartCategory = ReturnEntry['category'] | SpotGroup
+type ChartCategory = ReturnEntry['category'] | SpotGroup | 'total'
 const categoryTabs: { value: ChartCategory; label: string }[] = [
-  { value: '合约交易盈亏', label: '合约已实现' }, { value: 'crypto', label: '现货' }, { value: 'stocks', label: '股票' }, { value: 'other', label: '其他资产' },
+  { value: 'total', label: '整体' }, { value: '合约交易盈亏', label: '合约已实现' }, { value: 'crypto', label: '现货' }, { value: 'stocks', label: '股票' }, { value: 'other', label: '其他资产' },
   { value: '交易手续费', label: '手续费' }, { value: '资金费', label: '资金费' }, { value: '奖励收入', label: '奖励' },
 ]
 
@@ -194,7 +201,7 @@ export default function ReturnsPage({ currency, hidden, currencyControls }: { cu
   const [source, setSource] = useState(''), [asset, setAsset] = useState('USDT')
   const [symbol, setSymbol] = useState(''), [direction, setDirection] = useState('')
   const [chart, setChart] = useState<'cumulative' | 'daily'>('cumulative')
-  const [chartCategory, setChartCategory] = useState<ChartCategory>('合约交易盈亏')
+  const [chartCategory, setChartCategory] = useState<ChartCategory>('total')
   const [rankMarket, setRankMarket] = useState('all')
   const [savedState, setState] = useState<TransactionState>(() => ({ records: [], syncs: transactionState.syncs }))
   const [points, setPoints] = useState<readonly EquityPoint[]>(savedEquityPoints)
@@ -285,11 +292,12 @@ export default function ReturnsPage({ currency, hidden, currencyControls }: { cu
     const position = contracts.find(position => position.symbol === row.label)
     return { ...row, id: 'contract:' + row.id, kind: '合约', symbol, icon: asset?.icon ?? position?.icon ?? closedContractIcon(symbol) }
   })
-  const rankRows = [...rankedSpot, ...rankedContracts].filter(row => rankMarket === 'all' || row.kind === ({ crypto: '加密现货', stocks: '股票', contracts: '合约', other: '其他' } as Record<string, string>)[rankMarket])
+  const rankRows = [...rankedSpot, ...rankedContracts].filter(row => row.amount !== null && !new Money(row.amount).isZero()).filter(row => rankMarket === 'all' || row.kind === ({ crypto: '加密现货', stocks: '股票', contracts: '合约', other: '其他' } as Record<string, string>)[rankMarket])
   const filteredRounds = history.rounds.filter(round => (!source || 'live-' + round.connectionId === source) && (!symbol || round.symbol === symbol) && (!direction || round.direction === direction) && round.pnlAsset === unit && (round.closedAt ?? round.lastAt) >= start && (round.closedAt ?? round.lastAt) <= end)
   const stats = closedReturnStats(filteredRounds), closedFunding = closedFundingBreakdown(filteredRounds, entries)
-  const chartDays = view === 'overall' ? (chartCategory === 'crypto' || chartCategory === 'stocks' || chartCategory === 'other' ? spotGroupDays(state, points, periodFilter, currentPositions, accountRows, chartCategory) : returnDays(ofCategory(chartCategory))) : closedReturnDays(filteredRounds)
-  const chartTitle = view === 'overall' ? (categoryTabs.find(item => item.value === chartCategory)?.label ?? '') + (chart === 'daily' ? '每日记录' : '累计记录') : chart === 'daily' ? '每日已平仓净收益' : '累计已平仓净收益'
+  const chartDays = view === 'overall' ? (chartCategory === 'total' ? mergeDays([returnDays(filtered), ...(['crypto', 'stocks', 'other'] as const).map(group => spotGroupDays(state, points, periodFilter, currentPositions, accountRows, group))]) : chartCategory === 'crypto' || chartCategory === 'stocks' || chartCategory === 'other' ? spotGroupDays(state, points, periodFilter, currentPositions, accountRows, chartCategory) : returnDays(ofCategory(chartCategory))) : closedReturnDays(filteredRounds)
+  const weekly = chart === 'daily' && isWeekly(view === 'contracts' ? returnDaySlots(chartDays, start, end) : chartDays)
+  const chartTitle = view === 'overall' ? (categoryTabs.find(item => item.value === chartCategory)?.label ?? '') + (chart === 'daily' ? weekly ? '每周记录' : '每日记录' : '累计记录') : chart === 'daily' ? weekly ? '每周已平仓净收益' : '每日已平仓净收益' : '累计已平仓净收益'
   const selectedRound = history.rounds.find(round => round.id === roundId) ?? null
   const reviewRounds = reviewDay ? filteredRounds.filter(round => round.closedAt !== null && round.status !== '持仓中' && calendarToday(new Date(round.closedAt)) === reviewDay) : filteredRounds
   const pages = Math.max(1, Math.ceil(reviewRounds.length / 15)), currentPage = Math.min(page, pages)
@@ -329,7 +337,7 @@ export default function ReturnsPage({ currency, hidden, currencyControls }: { cu
         {view === 'contracts' && <><FilterField label={t('交易品种')}><Select value={symbol} onChange={setSymbol} label={t('合约复盘品种')} searchable options={[{ value: '', label: '全部品种' }, ...symbols.map(value => ({ value, label: value }))]} /></FilterField><FilterField label={t('交易方向')}><Select value={direction} onChange={setDirection} label={t('合约复盘方向')} options={[{ value: '', label: '全部方向' }, { value: '做多', label: '做多' }, { value: '做空', label: '做空' }]} /></FilterField></>}
         <FilterField label={t('统计币种')}><Select value={unit} onChange={setAsset} label={t('收益统计币种')} searchable options={units.map(value => ({ value, label: value }))} /></FilterField>
         <FilterField label={t('时间范围')}><ReturnRangeFilter value={activeRange} onChange={setRange} title={t('收益统计时间范围')} /></FilterField>
-        {(source || symbol || direction || range.period !== '30天') && <ClearFilters onClick={() => { setSource(''); setSymbol(''); setDirection(''); setRange({ period: '30天' }) }} />}
+        <ClearFilters active={Boolean(source || symbol || direction) || range.period !== '30天'} onClick={() => { setSource(''); setSymbol(''); setDirection(''); setRange({ period: '30天' }) }} />
       </FilterBar><p className="returns-filter-note">{returnRangeLabel(activeRange)} {t('· 北京时间 ·')} {unit}{!hidden && readIssues && <IssueHint message={readIssues} />}</p>
     </div>
     {!preview && loading && <p className="returns-loading" role="status">{t('正在读取已保存记录…')}</p>}

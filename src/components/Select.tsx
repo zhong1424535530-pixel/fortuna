@@ -33,10 +33,10 @@ export default function Select({ value, onChange, options, label, disabled = fal
     const position = () => {
       const rect = trigger.current?.getBoundingClientRect()
       if (!rect) return
-      const width = Math.min(Math.max(rect.width, 260), 344, window.innerWidth - 32)
+      const width = Math.min(Math.max(rect.width, 300), 360, window.innerWidth - 32)
       const below = window.innerHeight - rect.bottom - 24, above = rect.top - 24
       const upwards = below < 220 && above > below
-      const height = Math.min(360, Math.max(80, upwards ? above : below))
+      const height = Math.min(400, Math.max(80, upwards ? above : below))
       setAnchor({ left: Math.max(16, Math.min(rect.left, window.innerWidth - width - 16)), top: upwards ? Math.max(16, rect.top - height - 8) : rect.bottom + 8, width, maxHeight: height })
     }
     position()

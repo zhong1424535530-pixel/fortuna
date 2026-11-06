@@ -74,6 +74,33 @@ export function returnDaySlots(days: ReturnDay[], start: number, end: number) {
   return slots
 }
 
+type DaySlot = { label: string; amount: string | null; cumulative: string | null }
+const DATE = /^\d{4}-\d{2}-\d{2}$/
+// 日期跨度超过 60 天（约两个月）时，每日柱子太密，改成每周一根
+export const WEEKLY_AFTER_DAYS = 60
+export function isWeekly(slots: DaySlot[]) {
+  const first = slots[0]?.label, last = slots.at(-1)?.label
+  return !!first && !!last && DATE.test(first) && DATE.test(last) && (Date.parse(last + 'T00:00:00Z') - Date.parse(first + 'T00:00:00Z')) / 86400000 + 1 > WEEKLY_AFTER_DAYS
+}
+// 按周一起算的自然周合并；标签用周一的日期。一周内全是空日则仍为空。
+export function groupWeeks(slots: DaySlot[]): DaySlot[] {
+  const weeks = new Map<string, Decimal | null>()
+  for (const slot of slots) {
+    const date = new Date(slot.label + 'T00:00:00Z')
+    date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 6) % 7)
+    const label = date.toISOString().slice(0, 10), total = weeks.get(label) ?? null
+    weeks.set(label, slot.amount === null ? total : (total ?? new Money(0)).plus(slot.amount))
+  }
+  // 首尾之间没有记录的周也补一根空位，时间轴才均匀
+  const labels = [...weeks.keys()].sort(), result: DaySlot[] = []
+  if (!labels.length) return result
+  for (let time = Date.parse(labels[0] + 'T00:00:00Z'); time <= Date.parse(labels.at(-1)! + 'T00:00:00Z'); time += 7 * 86400000) {
+    const label = new Date(time).toISOString().slice(0, 10), amount = weeks.get(label) ?? null
+    result.push({ label, amount: amount === null ? null : amount.toFixed(), cumulative: null })
+  }
+  return result
+}
+
 export function returnRanking(entries: ReturnEntry[], by: 'asset' | 'source') {
   const groups = new Map<string, { id: string; label: string; amounts: ReturnEntry[] }>()
   for (const entry of entries) {

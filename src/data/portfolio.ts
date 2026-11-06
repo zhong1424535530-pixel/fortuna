@@ -25,7 +25,8 @@ export const DEMO_DATE = '2026-10-17'
 export const periods: Period[] = ['1天', '7天', '30天', '1年']
 export const categories: Category[] = ['加密资产', '股票', '现金与稳定币', '其他资产']
 export const categoryColors: Record<Category, string> = {
-  加密资产: '#9fffd2', 股票: '#8cabc9', 现金与稳定币: '#d5c79a', 其他资产: '#b5a1bf',
+  加密资产: '#ff9f0a', 股票: '#5e5ce6', 现金与稳定币: '#0a84ff', 其他资产: '#bf5af2', // 苹果系统色
+
 }
 
 export type AccountId = string

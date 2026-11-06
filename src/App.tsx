@@ -7,6 +7,7 @@ import ConnectionDialog from './components/Connections'
 import type { ManualAccount } from './data/workspace'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MotionConfig, motion } from 'motion/react'
+import { playEntrance } from './motion-effects'
 import {
   ArrowUpRight, ChevronDown, ChevronRight,
   LayoutDashboard,
@@ -22,7 +23,7 @@ import AssetAccountFilter from './components/AssetAccountFilter'
 import MarginRatios from './components/MarginRatios'
 import Select from './components/Select'
 import ReturnRangeFilter from './components/ReturnRangeFilter'
-import { ClearFilters, FilterBar, FilterField, SearchField } from './components/FilterBar'
+import { ClearFilters, FilterBar, FilterField, SearchField, Segmented } from './components/FilterBar'
 import { PeriodChange } from './components/PeriodChange'
 import AssetManagerPage from './components/AssetManagerPage'
 import AssetCosts from './components/AssetCosts'
@@ -64,6 +65,12 @@ const navigation = [
   { label: '资产与价格', icon: Tags, view: 'manage' },
 ] as const
 
+// 大数字照苹果写法：货币符号和小数缩小变灰，整数部分突出；隐藏金额等非数字原样显示。
+function HeroMoney({ text }: { text: string }) {
+  const parts = text.match(/^(-?\D*)([\d,]+)(\.\d+)?$/)
+  if (!parts) return <>{text}</>
+  return <><small>{parts[1]}</small><span className="hero-int">{parts[2]}</span>{parts[3] && <small>{parts[3]}</small>}</>
+}
 function sourceNames(asset: Holding) {
   return [...new Set(asset.positions.map(position => accounts.find(account => account.id === position.accountId)?.name).filter(Boolean))] as string[]
 }
@@ -76,24 +83,21 @@ function HoldingsList({ items, currency, hidden, onSelect, compact = false, show
   const value = (asset: Holding) => asset.usdPrice === null ? missingValue(asset) : formatMoney(holdingValueCents(asset), currency, hidden)
   const share = (asset: Holding) => hidden ? '—' : asset.usdPrice === null ? missingValue(asset) : assetValueCents <= 0 ? '—' : `${(holdingValueCents(asset) / assetValueCents * 100).toFixed(1)}%`
   const pnlReason = (cost: ReturnType<typeof holdingCostSummary>) => cost.costCents === null ? '成本未填齐，暂不计算盈亏。' : '缺少现价，暂不计算盈亏。'
-  const todayCell = (pnlToday: number | null, changeToday: number | null) => <span className="holding-profit-value"><SignedAmount value={pnlToday} currency={currency} hidden={hidden} />{changeToday === null ? <small>—</small> : <Trend value={changeToday} hidden={hidden} />}</span>
-  // 成本未填时整格只显示一个"—"；填了成本才显示均价和盈亏。
-  const costCell = (cost: ReturnType<typeof holdingCostSummary>) => cost.averageUsdPrice === null ? <Unavailable hidden={hidden} reason={pnlReason(cost)} /> : <span className="holding-profit-value">
-    <small className="numeric">{t('均价')} {formatPrice(cost.averageUsdPrice, currency, hidden)}</small>
-    {cost.pnlCents === null ? <Unavailable hidden={hidden} reason={pnlReason(cost)} /> : <span className="holding-pnl-line"><SignedAmount value={cost.pnlCents} currency={currency} hidden={hidden} />{cost.pnlPercent !== null && <Trend value={cost.pnlPercent} hidden={hidden} />}</span>}
-  </span>
+  const todayCell = (pnlToday: number | null, changeToday: number | null) => <span className="holding-today"><SignedAmount value={pnlToday} currency={currency} hidden={hidden} />{changeToday === null ? <small>—</small> : <Trend value={changeToday} hidden={hidden} />}</span>
+  // 成本：总成本在上、均价在下；盈亏：金额在上、涨跌胶囊在下。成本未填齐时只显示一个"—"。
+  const pnlCell = (cost: ReturnType<typeof holdingCostSummary>) => cost.pnlCents === null ? <Unavailable hidden={hidden} reason={pnlReason(cost)} /> : <span className="holding-stack"><SignedAmount value={cost.pnlCents} currency={currency} hidden={hidden} />{cost.pnlPercent !== null && <Trend value={cost.pnlPercent} hidden={hidden} />}</span>
   return <>
     <div className="table-scroll"><table className={`holdings-table spot-holdings-table ${compact ? 'compact-table' : ''}`}>
-      <thead><tr><th>{t('资产')}</th><th className="quantity-column">{t('持有数量')}</th><th className="price-column">{t('价格')}</th><th>{t('持仓估值')}</th><th>{t('今日盈亏')}</th><th className="pnl-column">{t('成本 / 持仓盈亏')}</th><th className="allocation-column">{t('占比')}</th><th className="source-column">{t('存放位置')}</th><th><span className="sr-only">{t('详情')}</span></th></tr></thead>
+      <thead><tr><th>{t('资产')}</th><th>{t('持有数量')}</th><th>{t('价格')}</th><th>{t('持仓估值')}</th><th>{t('占比')}</th><th>{t('今日盈亏')}</th><th>{t('均价')}</th><th>{t('持仓盈亏')}</th><th><span className="sr-only">{t('详情')}</span></th></tr></thead>
       <tbody>{rows.map(({ asset, cost, changeToday, pnlToday }) => { const names = sourceNames(asset); return <tr key={asset.id}>
-        <td><button type="button" className="asset-name-button" onClick={() => onSelect(asset)}><Avatar src={asset.icon} name={asset.symbol} company={asset.category === '股票'} /><span><strong title={asset.symbol}>{asset.symbol}</strong>{showSources && <small title={sourceLabel(asset)}>{sourceLabel(asset)}</small>}</span></button></td>
-        <td className="quantity-column numeric muted">{formatQuantity(holdingQuantity(asset), hidden)}</td>
-        <td className="price-column numeric" title={asset.priceUpdatedAt && !asset.manualPrice ? `行情时间：${new Date(asset.priceUpdatedAt).toLocaleString('zh-CN')}` : undefined}>{asset.usdPrice === null ? <Unavailable hidden={hidden} reason={t('尚未取得有效价格。')} /> : formatHoldingPrice(asset, currency, hidden)}</td>
+        <td><button type="button" className="asset-name-button" onClick={() => onSelect(asset)}><Avatar src={asset.icon} name={asset.symbol} company={asset.category === '股票'} /><span><strong title={asset.symbol}>{asset.symbol}</strong><small title={names.join('、')}>{names.length > 1 ? `${names.length} ${t('个账户')}` : names[0] ?? '—'}</small></span></button></td>
+        <td className="numeric">{formatQuantity(holdingQuantity(asset), hidden)}</td>
+        <td className="numeric" title={asset.priceUpdatedAt && !asset.manualPrice ? `行情时间：${new Date(asset.priceUpdatedAt).toLocaleString('zh-CN')}` : undefined}>{asset.usdPrice === null ? <Unavailable hidden={hidden} reason={t('尚未取得有效价格。')} /> : formatHoldingPrice(asset, currency, hidden)}</td>
         <td className="numeric value-cell">{value(asset)}</td>
+        <td><div className="table-allocation"><span className="numeric">{share(asset)}</span><span className="tiny-track"><span style={{ width: `${hidden || asset.usdPrice === null || assetValueCents <= 0 ? 0 : Math.min(100, holdingValueCents(asset) / assetValueCents * 100)}%` }} /></span></div></td>
         <td>{todayCell(pnlToday, changeToday)}</td>
-        <td className="pnl-column">{costCell(cost)}</td>
-        <td className="allocation-column"><div className="table-allocation"><span className="numeric">{share(asset)}</span><span className="tiny-track"><span style={{ width: `${hidden || asset.usdPrice === null || assetValueCents <= 0 ? 0 : Math.min(100, holdingValueCents(asset) / assetValueCents * 100)}%` }} /></span></div></td>
-        <td className="source-column"><span className="source-label" title={names.join('、')}>{names[0] ?? '—'}{names.length > 1 && <small> +{names.length - 1}</small>}</span></td>
+        <td className="numeric">{cost.averageUsdPrice === null ? <Unavailable hidden={hidden} reason={pnlReason(cost)} /> : formatPrice(cost.averageUsdPrice, currency, hidden)}</td>
+        <td>{pnlCell(cost)}</td>
         <td><Button variant="ghost" className="row-action icon-button" aria-label={`查看 ${asset.symbol} 详情`} onClick={() => onSelect(asset)}><ChevronRight size={16} /></Button></td>
       </tr> })}</tbody>
     </table></div>
@@ -144,6 +148,7 @@ export default function App() {
   const [assetsExpanded, setAssetsExpanded] = useState(() => routeFromHash().startsWith('assets/'))
   const lastAssetView = useRef<View>(routeFromHash().startsWith('assets/') ? routeFromHash() : 'assets/crypto')
   const [revision, setRevision] = useState(0)
+  useEffect(() => { const id = requestAnimationFrame(() => playEntrance(document.getElementById('main-content'))); return () => cancelAnimationFrame(id) }, [view, lang])
   const [currency, setCurrency] = useState<Currency>('USD')
   const [hidden, setHidden] = useState(false)
   const [netRange, setNetRange] = useState<ReturnRange>({ period: '30天' })
@@ -293,11 +298,11 @@ export default function App() {
 
   const holdingsFilters = <FilterBar className="holdings-filter-bar">
     <FilterField label={t('搜索')} wide><SearchField label={t('搜索币种、股票或合约')} value={query} onChange={setQuery} placeholder={contractPage ? '搜索合约' : '搜索资产或合约'} /></FilterField>
-    {scope === '现货与股票' ? <FilterField label={t('类别')} fit><div className="category-tabs" role="group" aria-label={t('资产类别')}>{(assetMarket ? (assetMarket === 'crypto' ? ['全部', '加密资产', '现金与稳定币'] : ['全部']) : ['全部', ...categories]).map(item => <button type="button" key={item} className={category === item ? 'active' : ''} aria-pressed={category === item} onClick={() => setCategory(item as Category | '全部')}>{item}</button>)}</div></FilterField>
-      : scope === '合约' ? <FilterField label={t('方向')} fit><div className="category-tabs" role="group" aria-label={t('合约方向')}>{(['全部', '做多', '做空'] as const).map(item => <button type="button" key={item} className={direction === item ? 'active' : ''} aria-pressed={direction === item} onClick={() => setDirection(item)}>{item === '全部' ? '全部方向' : item}</button>)}</div></FilterField>
+    {scope === '现货与股票' ? <FilterField label={t('类别')} fit><Segmented label={t('资产类别')} value={category} onChange={value => setCategory(value as Category | '全部')} options={(assetMarket ? (assetMarket === 'crypto' ? ['全部', '加密资产', '现金与稳定币'] : ['全部']) : ['全部', ...categories]) as string[]} /></FilterField>
+      : scope === '合约' ? <FilterField label={t('方向')} fit><Segmented label={t('合约方向')} value={direction} onChange={setDirection} options={['全部', '做多', '做空'] as const} format={item => item === '全部' ? '全部方向' : item} /></FilterField>
         : null}
     <FilterField label={t('存放账户')}>{assetSection ? <AssetAccountFilter groups={accountGroups} value={accountFilter} onChange={setAccountFilter} /> : <Select label={t('筛选存放账户')} value={accountFilter} onChange={setAccountFilter} searchable options={[{ value: '全部', label: '全部账户', icon: <Layers3 size={18} /> }, ...accounts.map(account => ({ value: account.id, label: account.name, icon: account.icon }))]} />}</FilterField>
-    {hasActiveFilters && <ClearFilters onClick={clearFilters} />}
+    <ClearFilters active={hasActiveFilters} onClick={clearFilters} />
   </FilterBar>
 
   return <MotionConfig reducedMotion="user">
@@ -305,7 +310,7 @@ export default function App() {
     <div className="app-shell">
       {mobileOpen && <button type="button" className="mobile-scrim" aria-label={t('关闭导航菜单')} onClick={() => setMobileOpen(false)} />}
       <aside ref={sidebarRef} className={`sidebar ${mobileOpen ? 'is-open' : ''}`} aria-label={t('主导航')} inert={compactNavigation && !mobileOpen}>
-        <div className="sidebar-identity"><div className="sidebar-brand"><Wordmark className="sidebar-wordmark" /></div><Button className="mobile-close icon-button" variant="ghost" onClick={() => setMobileOpen(false)} aria-label={t('关闭导航')}><X size={19} /></Button></div>
+        <div className="sidebar-identity"><div className="sidebar-brand"><Wordmark className="sidebar-wordmark" withMark /></div><Button className="mobile-close icon-button" variant="ghost" onClick={() => setMobileOpen(false)} aria-label={t('关闭导航')}><X size={19} /></Button></div>
         <nav>{navigation.map(item => {
           const isGroup = item.view === 'assets'
           const active = isGroup ? assetSection : view === item.view
@@ -332,7 +337,7 @@ export default function App() {
             <motion.section className="hero-panel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35 }}>
               <div className="hero-body">
               <div className="hero-main"><div className="hero-caption"><span>{t('已统计净资产估值')}{!hidden && sortedHoldings.some(asset => asset.usdPrice === null) && <IssueHint message={`${sortedHoldings.filter(asset => asset.usdPrice === null).length}项资产缺少有效价格或汇率，数量保留，未计入估值。`} />}</span>{displayControls}</div>
-                <div className={`hero-value numeric ${hidden ? 'is-hidden' : ''}`}>{awaitingLiveBalances() ? <Unavailable hidden={hidden} reason={t('尚未成功读到账户余额，不显示为零。')} /> : money(totalValueCents)}</div>
+                <div className={`hero-value numeric ${hidden ? 'is-hidden' : ''}`}>{awaitingLiveBalances() ? <Unavailable hidden={hidden} reason={t('尚未成功读到账户余额，不显示为零。')} /> : <HeroMoney text={money(totalValueCents)} />}</div>
                 <span className="asset-daily-pnl"><span>{t('今日盈亏')}{!hidden && overviewToday.missingCount > 0 && <IssueHint message={t('部分资产缺少今日参考价、未刷新或读取失败，当前金额未包含这些资产的价格变化。')} />}</span><SignedAmount value={overviewToday.pnlCents} currency={currency} hidden={hidden} /></span>
                 <PeriodChange range={netRange} points={isReal() ? history : []} currency={currency} hidden={hidden} />
               </div>

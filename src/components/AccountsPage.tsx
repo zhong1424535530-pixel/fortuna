@@ -1,6 +1,6 @@
 import { t } from '../i18n'
 import { isReal, connectionStatus, connectionTime, liveState, removeConnection, syncConnection } from '../data/live'
-import { ClearFilters, FilterBar, FilterField, SearchField } from './FilterBar'
+import { ClearFilters, FilterBar, FilterField, SearchField, Segmented } from './FilterBar'
 import { binanceAccountGroup, visibleBinanceGroups } from '../data/account-groups'
 import { mergeHoldingRows } from '../data/overview'
 import { exchanges, walletFamilies } from '../data/live-types'
@@ -91,8 +91,8 @@ export default function AccountsPage({ currency, hidden, onSelectAsset, onSelect
       <FilterBar className="account-page-toolbar">
         {toolbarStart && <div className="account-toolbar-display">{toolbarStart}</div>}
         <FilterField label={t('搜索')} wide><SearchField label={t('搜索平台、钱包或账户')} value={query} onChange={setQuery} placeholder={t('搜索平台、钱包或账户')} /></FilterField>
-        <FilterField label={t('来源类型')} fit><div className="category-tabs" role="group" aria-label={t('账户来源类型')}>{['全部', '交易所', '链上钱包', '手动账户'].map(item => <button type="button" key={item} aria-pressed={group === item} className={group === item ? 'active' : ''} onClick={() => setGroup(item)}>{item}</button>)}</div></FilterField>
-        {(query || group !== '全部') && <ClearFilters onClick={() => { setQuery(''); setGroup('全部') }} />}
+        <FilterField label={t('来源类型')} fit><Segmented label={t('账户来源类型')} value={group} onChange={setGroup} options={['全部', '交易所', '链上钱包', '手动账户']} /></FilterField>
+        <ClearFilters active={Boolean(query) || group !== '全部'} onClick={() => { setQuery(''); setGroup('全部') }} />
       </FilterBar>
       {error && <p className="connection-warning" role="alert">{error}</p>}
       <div className="account-page-source-grid">{visibleSources.map(item => {

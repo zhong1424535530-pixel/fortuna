@@ -41,9 +41,11 @@ function checkValue(quantity: number, price: number | null, currency: Currency, 
 // 所属账户按来源分组并带上来源图标，手动账户排最前，方便在众多链和子账户里找到。
 const accountGroupOrder = ['手动账户', '交易所', '链上钱包', '券商'] as const
 function accountOptions() {
+  // 交易所的现货、合约、资金账户，钱包的各条链，本来都是同一个账户，这里每个来源只列一项（记在第一个子账户上，币安是现货）
   const rest = accountGroupOrder.flatMap(group => assetSources.filter(source => source.group === group).flatMap(source => accounts
     .filter(account => source.accountIds.includes(account.id) && account.id !== 'manual' && !(account.kind === '手动账户' && account.name === '手动账户'))
-    .map(account => ({ value: account.id, label: account.name, icon: source.icon, group }))))
+    .slice(0, group === '手动账户' ? undefined : 1)
+    .map(account => ({ value: account.id, label: group === '手动账户' ? account.name : source.name, icon: source.icon, group }))))
   return [{ value: 'manual', label: '手动账户', icon: <Landmark size={18} />, group: '手动账户' }, ...rest.filter(option => option.group === '手动账户'), ...rest.filter(option => option.group !== '手动账户')]
 }
 const timeText = (iso: string, short = false) => new Date(iso).toLocaleString('zh-CN', short ? { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' } : undefined)
