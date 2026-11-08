@@ -12,7 +12,7 @@ import {
   ArrowUpRight, ChevronDown, ChevronRight,
   LayoutDashboard,
   RefreshCw, Search, Settings2, ArrowDownUp, Tags,
-  Wallet, X, Layers3, ChartNoAxesCombined, Coins, Banknote, Boxes, ReceiptText,
+  Wallet, Layers3, ChartNoAxesCombined, Coins, Banknote, Boxes, ReceiptText,
 } from 'lucide-react'
 import { Button, Panel, Avatar, Trend, Modal, SignedAmount, IssueHint, Unavailable } from './components/ui'
 import { AllocationChart, HistoryChart, MajorHoldingsChart } from './components/Charts'
@@ -175,10 +175,7 @@ export default function App() {
   const [connectionEditor, setConnectionEditor] = useState<Connection | ManualAccount | 'new' | null>(null)
   const [newConnectionType, setNewConnectionType] = useState<AddAccountType>('binance')
   const addConnection = (type: AddAccountType = 'binance') => { setNewConnectionType(type); setConnectionEditor('new') }
-  const [mobileOpen, setMobileOpen] = useState(false)
   const [manageLiabilities, setManageLiabilities] = useState(false)
-  const [compactNavigation, setCompactNavigation] = useState(() => window.matchMedia('(max-width: 767px)').matches)
-  const sidebarRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const nextMidnight = Date.parse(valuationDay + 'T00:00:00+08:00') + 86400000
@@ -192,43 +189,11 @@ export default function App() {
       const next = routeFromHash()
       setView(next)
       if (next.startsWith('assets/')) { setAssetsExpanded(true); lastAssetView.current = next; setScope(assetScope(next)); setCategory('全部'); setQuery(''); setAccountFilter('全部'); setDirection('全部') }
-      setMobileOpen(false)
     }
     if (window.location.hash === '#history') onHash()
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
-  useEffect(() => {
-    const query = window.matchMedia('(max-width: 767px)')
-    const onChange = () => setCompactNavigation(query.matches)
-    query.addEventListener('change', onChange)
-    return () => query.removeEventListener('change', onChange)
-  }, [])
-  useEffect(() => {
-    if (!mobileOpen) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const focusable = () => Array.from(sidebarRef.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? []).filter(button => button.offsetParent !== null)
-    focusable()[0]?.focus()
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileOpen(false)
-      if (event.key === 'Tab') {
-        const buttons = focusable()
-        if (event.shiftKey && document.activeElement === buttons[0]) { event.preventDefault(); buttons.at(-1)?.focus() }
-        else if (!event.shiftKey && document.activeElement === buttons.at(-1)) { event.preventDefault(); buttons[0]?.focus() }
-      }
-    }
-    const desktop = window.matchMedia('(min-width: 768px)')
-    const onResize = () => { if (desktop.matches) setMobileOpen(false) }
-    document.addEventListener('keydown', onKey)
-    desktop.addEventListener('change', onResize)
-    return () => {
-      document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', onKey)
-      desktop.removeEventListener('change', onResize)
-      document.getElementById('mobile-menu-toggle')?.focus()
-    }
-  }, [mobileOpen])
 
   useEffect(() => {
     const update = (event: Event) => {
@@ -250,7 +215,6 @@ export default function App() {
     if (next.startsWith('assets/')) { setAssetsExpanded(true); lastAssetView.current = next; setScope(assetScope(next)); setCategory('全部'); setQuery(''); setAccountFilter('全部'); setDirection('全部') }
     window.location.hash = next
     setView(next)
-    setMobileOpen(false)
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
   const selectCategory = useCallback((name: string) => {
@@ -316,9 +280,8 @@ export default function App() {
   return <MotionConfig reducedMotion="user">
     <a href="#main-content" className="skip-link" onClick={event => { event.preventDefault(); document.getElementById('main-content')?.focus() }}>{t('跳到主要内容')}</a>
     <div className="app-shell">
-      {mobileOpen && <button type="button" className="mobile-scrim" aria-label={t('关闭导航菜单')} onClick={() => setMobileOpen(false)} />}
-      <aside ref={sidebarRef} className={`sidebar ${mobileOpen ? 'is-open' : ''}`} aria-label={t('主导航')} inert={compactNavigation && !mobileOpen}>
-        <div className="sidebar-identity"><div className="sidebar-brand"><Wordmark className="sidebar-wordmark" withMark /></div><Button className="mobile-close icon-button" variant="ghost" onClick={() => setMobileOpen(false)} aria-label={t('关闭导航')}><X size={19} /></Button></div>
+      <aside className="sidebar" aria-label={t('主导航')}>
+        <div className="sidebar-identity"><div className="sidebar-brand"><Wordmark className="sidebar-wordmark" withMark /></div></div>
         <nav>{navigation.map(item => {
           const isGroup = item.view === 'assets'
           const active = isGroup ? assetSection : view === item.view
@@ -331,7 +294,7 @@ export default function App() {
         <div className="sidebar-bottom"><button type="button" className={`nav-item ${view === 'settings' ? 'active' : ''}`} aria-current={view === 'settings' ? 'page' : undefined} onClick={() => navigate('settings')}><Settings2 size={18} strokeWidth={1.6} />{t('设置')}</button></div>
       </aside>
 
-      <div className="workspace" inert={mobileOpen}>
+      <div className="workspace">
         <header className="topbar"><div className="topbar-leading"><span className="breadcrumb"><span className="breadcrumb-root">{t('个人空间')}</span><ChevronRight size={13} /><strong>{t(pageNames[view])}</strong></span></div><ProfileMenu hidden={hidden} onToggleHidden={() => setHidden(value => !value)} onSettings={() => navigate('settings')} onManage={() => navigate('manage')} /></header>
 
         <main key={lang} id="main-content" className={`main-content${assetSection ? ' assets-page' : ''}${contractPage ? ' contracts-page' : ''}`} tabIndex={-1}>
@@ -437,7 +400,7 @@ export default function App() {
           {!assetSection && view !== 'accounts' && <footer className="page-footer"><span>{fxLabel()}</span></footer>}
         </main>
       </div>
-      <nav className="tab-bar" aria-label={t('主导航')} inert={mobileOpen}>
+      <nav className="tab-bar" aria-label={t('主导航')}>
         {tabs.map(tab => {
           const active = tab.view === 'assets' ? assetSection : view === tab.view
           return <button type="button" key={tab.view} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined} onClick={() => navigate(tab.view === 'assets' ? lastAssetView.current : tab.view)}><tab.icon size={22} strokeWidth={1.8} /><span>{t(tab.label)}</span></button>

@@ -50,7 +50,6 @@ button img { pointer-events: none; }
 .sidebar-identity { position: relative; min-height: 72px; padding: 24px 12px 12px; display: flex; align-items: flex-start; justify-content: center; }
 .sidebar-brand { color: var(--text-1); }
 .sidebar-wordmark { width: 110px; height: auto; overflow: visible; }
-.sidebar-identity .mobile-close { position: absolute; top: 10px; right: 8px; }
 .personal-avatar { display: inline-flex; align-items: center; justify-content: center; width: 43px; height: 43px; border: 1px solid var(--mint-a3); border-radius: 50%; color: var(--text-2); background: radial-gradient(circle at 30% 20%, var(--line-solid), var(--surface-2) 75%); box-shadow: 0 0 0 5px var(--mint-a1); overflow: hidden; }
 .personal-avatar > .asset-avatar { flex-shrink: 0; }
 .personal-avatar .asset-avatar img { object-fit: cover; }
@@ -364,7 +363,7 @@ h1:focus { outline: none; }
 .toast { position: fixed; right: 28px; bottom: 27px; z-index: 90; width: min(430px, calc(100vw - 32px)); display: flex; align-items: center; gap: 10px; padding: 16px; background: #132219ed; backdrop-filter: blur(16px); color: var(--text-2); border: 1px solid var(--dim); border-radius: var(--radius-lg); box-shadow: 0 10px 40px #0006; font-size: var(--fs-sm); line-height: 1.8; }
 .toast > svg { color: var(--text-3); }
 .toast button { margin-left: auto; border: 0; background: transparent; color: var(--text-3); display: inline-flex; }
-.mobile-menu, .mobile-close, .mobile-holdings, .mobile-scrim { display: none; }
+.mobile-holdings { display: none; }
 @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes dialog-in { from { opacity: 0; transform: translate(-50%, calc(-50% + 6px)); } to { opacity: 1; transform: translate(-50%, -50%); } }
 
@@ -426,8 +425,6 @@ h1:focus { outline: none; }
   .topbar { padding: 6px 18px; height: auto; min-height: 58px; }
   .topbar-leading { gap: 9px; }
   .topbar-actions { gap: 10px; }
-  .mobile-menu, .mobile-close { display: inline-flex; }
-  .mobile-scrim { display: block; position: fixed; inset: 0; background: #0009; border: 0; z-index: 39; backdrop-filter: blur(3px); }
   .main-content { padding: 22px 17px 0; }
   .breadcrumb { gap: 7px; font-size: var(--fs-xs); }
   .topbar-divider { display: none; }
