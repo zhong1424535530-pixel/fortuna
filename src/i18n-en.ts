@@ -3,7 +3,7 @@ export const en: Record<string, string> = {
   // 导航和页面名
   '资产总览': 'Overview', '全部持仓': 'All holdings', '加密资产': 'Crypto', 'A股': 'China A-shares', '美股': 'US stocks', '合约持仓': 'Futures positions',
   '其他资产': 'Other assets', '账户与钱包': 'Accounts & wallets', '交易记录': 'Transactions', '收益分析': 'Returns', '资产与价格': 'Assets & prices', '设置': 'Settings',
-  '资产': 'Assets', '个人空间': 'Personal space', '跳到主要内容': 'Skip to main content',
+  '资产': 'Assets', '总览': 'Overview', '收益': 'Returns', '账户': 'Accounts', '更多': 'More', '个人空间': 'Personal space', '跳到主要内容': 'Skip to main content',
   // 头像菜单
   '账户菜单': 'Account menu', '我的账户': 'My account', '语言': 'Language', '隐藏金额': 'Hide amounts', '退出登录': 'Sign out', '个人头像': 'Profile picture',
   // 登录页

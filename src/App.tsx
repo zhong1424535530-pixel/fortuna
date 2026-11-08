@@ -11,7 +11,7 @@ import { playEntrance } from './motion-effects'
 import {
   ArrowUpRight, ChevronDown, ChevronRight,
   LayoutDashboard,
-  Menu, RefreshCw, Search, Settings2, ArrowDownUp, Tags,
+  RefreshCw, Search, Settings2, ArrowDownUp, Tags,
   Wallet, X, Layers3, ChartNoAxesCombined, Coins, Banknote, Boxes, ReceiptText,
 } from 'lucide-react'
 import { Button, Panel, Avatar, Trend, Modal, SignedAmount, IssueHint, Unavailable } from './components/ui'
@@ -63,6 +63,14 @@ const navigation = [
   { label: '交易记录', icon: ArrowDownUp, view: 'transactions' },
   { label: '收益分析', icon: ChartNoAxesCombined, view: 'returns' },
   { label: '资产与价格', icon: Tags, view: 'manage' },
+] as const
+// 手机底部标签栏：常用五页直达；资产与价格、设置放在右上角头像菜单里
+const tabs = [
+  { label: '总览', icon: LayoutDashboard, view: 'overview' },
+  { label: '资产', icon: Layers3, view: 'assets' },
+  { label: '收益', icon: ChartNoAxesCombined, view: 'returns' },
+  { label: '交易记录', icon: ArrowDownUp, view: 'transactions' },
+  { label: '账户', icon: Wallet, view: 'accounts' },
 ] as const
 
 // 大数字照苹果写法：货币符号和小数缩小变灰，整数部分突出；隐藏金额等非数字原样显示。
@@ -324,9 +332,10 @@ export default function App() {
       </aside>
 
       <div className="workspace" inert={mobileOpen}>
-        <header className="topbar"><div className="topbar-leading"><Button id="mobile-menu-toggle" variant="ghost" className="mobile-menu icon-button" aria-label={t('打开导航菜单')} aria-expanded={mobileOpen} onClick={() => setMobileOpen(!mobileOpen)}><Menu size={20} /></Button><span className="breadcrumb"><span className="breadcrumb-root">{t('个人空间')}</span><ChevronRight size={13} /><strong>{t(pageNames[view])}</strong></span></div><ProfileMenu hidden={hidden} onToggleHidden={() => setHidden(value => !value)} onSettings={() => navigate('settings')} /></header>
+        <header className="topbar"><div className="topbar-leading"><span className="breadcrumb"><span className="breadcrumb-root">{t('个人空间')}</span><ChevronRight size={13} /><strong>{t(pageNames[view])}</strong></span></div><ProfileMenu hidden={hidden} onToggleHidden={() => setHidden(value => !value)} onSettings={() => navigate('settings')} onManage={() => navigate('manage')} /></header>
 
         <main key={lang} id="main-content" className={`main-content${assetSection ? ' assets-page' : ''}${contractPage ? ' contracts-page' : ''}`} tabIndex={-1}>
+          {assetSection && <div className="asset-tabs" role="group" aria-label={t('资产')}>{assetViews.map(item => <button type="button" key={item} className={view === item ? 'active' : ''} aria-current={view === item ? 'page' : undefined} onClick={() => navigate(item)}>{t(pageNames[item])}</button>)}</div>}
           <div className="page-heading"><div><div className="page-title-row"><h1 id="page-heading" tabIndex={-1}>{t(pageNames[view])}</h1>{(liveReading.liveError || liveReading.balanceError || liveReading.marketError) && <IssueHint important message={[liveReading.liveError, liveReading.balanceError && '自动读取暂未成功，保留上次资料：' + liveReading.balanceError, liveReading.marketError && '行情更新暂未成功：' + liveReading.marketError].filter(Boolean).join('；')} />}{view === 'accounts' && <span className="accounts-title-display">{displayControls}</span>}</div></div>{view === 'accounts' && <div className="page-heading-actions">{!isReal() && <span className="date-label">{t('2026 年 10 月 17 日')} <span>{t('示例日期')}</span></span>}<Button onClick={() => addConnection()}>{t('添加账户')}</Button></div>}</div>
 
           {view === 'settings' ? <SettingsPage /> : view === 'accounts' ? <AccountsPage key={dataMode + (accountSource ?? '')} initialSourceId={accountSource} toolbarStart={displayControls} currency={currency} hidden={hidden} onSelectAsset={selectAsset} onSelectContract={selectContract} onEdit={setConnectionEditor} />
@@ -428,6 +437,12 @@ export default function App() {
           {!assetSection && view !== 'accounts' && <footer className="page-footer"><span>{fxLabel()}</span></footer>}
         </main>
       </div>
+      <nav className="tab-bar" aria-label={t('主导航')} inert={mobileOpen}>
+        {tabs.map(tab => {
+          const active = tab.view === 'assets' ? assetSection : view === tab.view
+          return <button type="button" key={tab.view} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined} onClick={() => navigate(tab.view === 'assets' ? lastAssetView.current : tab.view)}><tab.icon size={22} strokeWidth={1.8} /><span>{t(tab.label)}</span></button>
+        })}
+      </nav>
     </div>
 
     {connectionEditor && <ConnectionDialog key={connectionEditor === 'new' ? 'new' : connectionEditor.id} connection={connectionEditor !== 'new' && 'type' in connectionEditor ? connectionEditor : undefined} manualAccount={connectionEditor !== 'new' && !('type' in connectionEditor) ? connectionEditor : undefined} initialType={newConnectionType} onClose={() => setConnectionEditor(null)} />}

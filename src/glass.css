@@ -495,3 +495,72 @@ input[type=checkbox], input[type=radio] { accent-color: #fff; }
 /* 手机端持仓卡：左列一行放不下时胶囊换行，而不是被截断；胶囊也收紧一点 */
 .mobile-holding-left > span:not(.mobile-holding-name) { overflow: visible; flex-wrap: wrap; row-gap: 2px; }
 .mobile-holding-left .trend { padding: 1px 7px; font-size: 12px; line-height: 1.5; white-space: nowrap; flex: 0 0 auto; }
+
+/* ===== 手机：底部悬浮标签栏（照 iOS 写法），"更多"打开底部抽屉 ===== */
+.tab-bar, .asset-tabs { display: none; }
+@media (max-width: 767px) {
+  /* iOS 26 样式：悬浮玻璃胶囊；选中项是一块会滑动的亮色胶囊，图标和文字用主题色 */
+  .tab-bar {
+    position: fixed; z-index: 30; left: 16px; right: 16px; bottom: calc(8px + env(safe-area-inset-bottom));
+    display: grid; grid-template-columns: repeat(5, 1fr); padding: 4px; border-radius: 999px; isolation: isolate;
+    background: rgba(24,28,38,.62); backdrop-filter: blur(28px) saturate(180%);
+    box-shadow: inset 0 .5px 0 rgba(255,255,255,.3), inset 0 0 0 .5px rgba(255,255,255,.1), 0 10px 30px rgba(0,0,0,.45);
+  }
+  .tab-bar::before {
+    content: ''; position: absolute; z-index: -1; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / 5);
+    border-radius: 999px; background: rgba(255,255,255,.18); box-shadow: inset 0 .5px 0 rgba(255,255,255,.32), 0 1px 6px rgba(0,0,0,.25);
+    opacity: 0; translate: calc(var(--i, 0) * 100%) 0; transition: translate .45s var(--spring), opacity .2s ease;
+  }
+  .tab-bar:has(.active)::before { opacity: 1; }
+  .tab-bar:has(button:nth-child(2).active) { --i: 1; }
+  .tab-bar:has(button:nth-child(3).active) { --i: 2; }
+  .tab-bar:has(button:nth-child(4).active) { --i: 3; }
+  .tab-bar:has(button:nth-child(5).active) { --i: 4; }
+  .tab-bar button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 46px; padding: 0; border: 0; border-radius: 999px; background: none; color: rgba(255,255,255,.62); font-size: 10px; font-weight: 500; letter-spacing: .01em; transition: color .25s ease; }
+  .tab-bar button svg { width: 22px; height: 22px; }
+  .tab-bar button.active { background: none; color: #fff; font-weight: 600; }
+  .tab-bar button.active svg { stroke-width: 2.1; }
+  .tab-bar button:active { opacity: .7; }
+  /* 手机端分类胶囊：压一层深色底，别让星球亮边穿透文字 */
+  .category-tabs { background: rgba(24,28,38,.6); backdrop-filter: blur(20px) saturate(160%); }
+  .category-tabs > button:not(.active) { color: var(--text-2); }
+  /* 没有可重置的筛选时不显示孤零零的重置按钮 */
+  .filter-bar .filter-clear:disabled { display: none; }
+  .main-content { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .topbar .profile-name { display: none; }
+
+  /* 侧边栏在手机上变成从下往上的抽屉 */
+  .sidebar { inset: auto 0 0 0; width: auto; max-height: 82dvh; border-radius: 30px 30px 0 0; padding-bottom: env(safe-area-inset-bottom); transform: translateY(105%); transition: transform .28s var(--ease); }
+  .sidebar.is-open { transform: translateY(0); }
+
+  /* 资产子页面：整行等分的分段胶囊（和来源类型同款），不横向滚动 */
+  .asset-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin: 0 0 16px; padding: 3px; border-radius: 999px; background: rgba(24,28,38,.6); backdrop-filter: blur(20px) saturate(160%); }
+  .asset-tabs button { min-width: 0; padding: 8px 0; border: 0; border-radius: 999px; background: none; color: var(--text-2); font-size: 12.5px; font-weight: 600; white-space: nowrap; transition: background-color .25s ease, color .25s ease; }
+  .asset-tabs button.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 3px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.08); }
+
+  /* 顶栏：去掉长胶囊，头像浮在右上角、和大标题同一行；标题行右侧留出头像的位置 */
+  .workspace { position: relative; }
+  .topbar { position: absolute; z-index: 20; top: 14px; right: 16px; height: 38px; min-height: 0; margin: 0; padding: 0; background: none; box-shadow: none; backdrop-filter: none; }
+  .topbar .topbar-leading { display: none; }
+  .main-content { padding-top: 14px; }
+  .page-heading { min-height: 38px; padding-right: 52px; }
+  /* 资产子页：先大标题，再分段胶囊 */
+  .assets-page { display: flex; flex-direction: column; }
+  .assets-page > * { min-width: 0; }
+  .assets-page > .page-heading { order: -2; }
+  .assets-page > .asset-tabs { order: -1; }
+
+  /* 手机上不用侧边栏：资产与价格、设置在头像菜单里 */
+  .sidebar { display: none; }
+}
+
+/* 收益页"整体收益 / 合约复盘"：和其他分段开关同款（白色滑块胶囊） */
+.segmented.returns-view-switch { gap: 0; padding: 3px; border: 0; border-radius: 999px; background: var(--fill-3); box-shadow: inset 0 1px 2px rgba(0,0,0,.08); }
+.returns-view-switch > button { min-height: 36px; padding: 0 20px; border: 0; border-radius: 999px; background: none; color: var(--text-3); font-size: var(--fs-sm); font-weight: 600; transition: background-color .25s ease, color .25s ease; }
+.returns-view-switch > button.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 3px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.08); }
+.returns-view-switch > button:not(.active):hover { background: none; color: var(--text-1); }
+@media (min-width: 768px) { .profile-item.mobile-only { display: none; } }
+@media (max-width: 767px) {
+  .segmented.returns-view-switch { background: rgba(24,28,38,.6); backdrop-filter: blur(20px) saturate(160%); }
+  .returns-view-switch > button:not(.active) { color: var(--text-2); }
+}

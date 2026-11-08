@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ChevronDown, CircleUserRound, Eye, EyeOff, LogOut, Settings2 } from 'lucide-react'
+import { ChevronDown, CircleUserRound, Eye, EyeOff, LogOut, Settings2, Tags } from 'lucide-react'
 import { logout } from '../data/auth'
 import { workspace } from '../data/workspace'
 import { setLang, t, useLang } from '../i18n'
@@ -7,7 +7,7 @@ import { Avatar } from './ui'
 import '../profile-menu.css'
 
 // 右上角头像：点开后可切换语言、隐藏金额、进入设置、退出登录。
-export default function ProfileMenu({ hidden, onToggleHidden, onSettings }: { hidden: boolean; onToggleHidden: () => void; onSettings: () => void }) {
+export default function ProfileMenu({ hidden, onToggleHidden, onSettings, onManage }: { hidden: boolean; onToggleHidden: () => void; onSettings: () => void; onManage: () => void }) {
   const lang = useLang()
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -42,6 +42,7 @@ export default function ProfileMenu({ hidden, onToggleHidden, onSettings }: { hi
         <div className="profile-lang" role="group" aria-label={t('语言')}>{(['zh', 'en'] as const).map(item => <button type="button" key={item} className={lang === item ? 'active' : ''} aria-pressed={lang === item} onClick={() => setLang(item)}>{item === 'zh' ? '中文' : 'EN'}</button>)}</div>
       </div>
       <button type="button" role="menuitemcheckbox" aria-checked={hidden} className="profile-item" onClick={onToggleHidden}>{hidden ? <EyeOff size={16} /> : <Eye size={16} />}<span>{t('隐藏金额')}</span><span className={`profile-switch${hidden ? ' on' : ''}`} aria-hidden /></button>
+      <button type="button" role="menuitem" className="profile-item mobile-only" onClick={() => { setOpen(false); onManage() }}><Tags size={16} /><span>{t('资产与价格')}</span></button>
       <button type="button" role="menuitem" className="profile-item" onClick={() => { setOpen(false); onSettings() }}><Settings2 size={16} /><span>{t('设置')}</span></button>
       <button type="button" role="menuitem" className="profile-item danger" disabled={busy} onClick={() => void signOut()}><LogOut size={16} /><span>{t('退出登录')}</span></button>
     </div>}
